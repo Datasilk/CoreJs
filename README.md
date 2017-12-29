@@ -26,13 +26,14 @@ For example:
 
 ```
 <script type="text/html" id="template_element">
-    <div class="element">{{title}}</div><div class="field"><input type="text" value="{{value}}">
+    <div class="element">{{title}}</div>
+    <div class="field"><input type="text" value="{{value}}"></div>
 </script>
 
 <script>
-var vars = {title: "Hello", value: "World"};
-var scaffold = new S.scaffold($('#template_element).val(), vars);
-$('body').append(scaffold.render());
+    var vars = {title: "Hello", value: "World"};
+    var scaffold = new S.scaffold($('#template_element).val(), vars);
+    $('body').append(scaffold.render());
 </script>
 ```
 
