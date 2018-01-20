@@ -49,8 +49,8 @@
         forpopup.removeClass('hide').append(div);
 
         //set up events
-        S.events.doc.resize.callback.add('popup', S.popup.resize, S.popup.resize, S.popup.resize);
-        S.events.doc.scroll.callback.add('popup', S.popup.resize, S.popup.resize, S.popup.resize);
+        $(window).on('resize', S.popup.resize);
+        $(window).on('scroll', S.popup.resize);
 
         if (opts.close == true) {
             $('.popup .btn-close a').on('click', function () {
