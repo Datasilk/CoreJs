@@ -64,7 +64,8 @@
     hide: function () {
         //remove events
         $('body > .for-popup').addClass('hide');
-        S.events.doc.resize.callback.remove('popup');
+        $(window).off('resize', S.popup.resize);
+        $(window).off('scroll', S.popup.resize);
     },
 
     bg: function (e) {

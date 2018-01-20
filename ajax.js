@@ -2,7 +2,7 @@
     //class used to make simple web service posts to the server
     queue: [],
 
-    post: function (url, data, callback, error, json) {
+    post: function (url, data, callback, error, json, opts) {
         var options = {
             method: "POST",
             data: JSON.stringify(data),
@@ -19,6 +19,12 @@
                 if (typeof error == 'function') { error(xhr, status, err); }
                 S.ajax.runQueue();
             }
+        }
+        if (opts) {
+            //user-specified options
+            if (opts.contentType) { options.contentType = opts.contentType; }
+            if (opts.method) { options.method = opts.method; }
+            if (opts.url) { options.url = opts.url; }
         }
         if (json == true) { options.dataType = 'json'; }
         S.ajax.queue.push(options);
