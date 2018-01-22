@@ -50,3 +50,14 @@ S.math = {
     }
 }
 
+S.iframe = function (selector) {
+    var iframe = $(selector)[0];
+    var doc = null;
+    if (iframe.contentDocument) { doc = iframe.contentDocument; }
+    else if (iframe.contentWindow) { doc = iframe.contentWindow; }
+    return {
+        document: doc,
+        window: iframe.contentWindow
+    };
+};
+
