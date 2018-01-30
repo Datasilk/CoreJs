@@ -39,12 +39,21 @@
             var pos = elem.position();
             var win = $(window);
             var speed = 1000 / 30;
+            var hideArea = false;
+            var hideAreaOffset = 0;
             if (item.options) {
                 if (item.options.useElemPos == true) {
                     pos = { left: elpos.left - pos.left, top: elpos.top - pos.top };
                 }
                 if (item.options.speed != null) {
                     speed = item.options.speed;
+                }
+                hideArea = item.options.hideArea || false;
+                hideAreaOffset = item.options.hideAreaOffset || 0;
+                if (hideArea == true) {
+                    //hide area the element being dragged previously took up in the DOM
+                    //by subtracting the element's height from the element's margin
+                    elem.css({ marginBottom:-1 * (elem.height() + hideAreaOffset)});
                 }
             }
 
@@ -70,7 +79,9 @@
                     h: elem.height()
                 },
                 options: item.options,
-                hasOnDrag: typeof item.onDrag == 'function'
+                hasOnDrag: typeof item.onDrag == 'function',
+                hideArea: hideArea,
+                hideAreaOffset: hideAreaOffset
             }
 
 
@@ -118,8 +129,8 @@
                     if (item.options.boundLeft > x) { x = item.options.boundLeft; }
                 }
             }
-            item.elem.style.left = x + 'px';
-            item.elem.style.top = y + 'px';
+            item.elem[0].style.left = x + 'px';
+            item.elem[0].style.top = y + 'px';
         },
 
         stop: function (index) {
@@ -127,6 +138,9 @@
             $(document).off('mousemove', S.drag.events.doc.move);
             $(document).off('mouseup', S.drag.events.doc.up);
             item = S.drag.items[S.drag.item.index];
+            if (S.drag.item.hideArea == true) {
+                S.drag.item.elem.css({ marginBottom: 0 });
+            }
             if (typeof item.onStop == 'function') {
                 item.onStop.call(item.options ? (item.options.callee ? item.options.callee : this) : this, item);
             }

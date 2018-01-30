@@ -2,7 +2,7 @@
     js: {
         load: function (file, id, callback) {
             //add javascript file to DOM
-            if (document.getElementById(id)) { if(callback){callback();}return false;}
+            if (document.getElementById(id)) { if (callback) { callback(); } return false; }
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
             script.type = 'text/javascript';
@@ -31,24 +31,37 @@
             $('head').append('<style id="' + id + '" type="text/css">' + css + "</style>");
         },
     }
-}
+};
 
 S.util.str = {
     isNumeric: function (str) {
         return !isNaN(parseFloat(str)) && isFinite(str);
     }
-}
+};
 
 S.math = {
     intersect: function (a, b) {
         //checks to see if rect (a) intersects with rect (b)
-        if (b.left < a.right && a.left < b.right && b.top < a.bottom){
+        if (b.left < a.right && a.left < b.right && b.top < a.bottom) {
             return a.top < b.bottom;
-        }else{
+        } else {
             return false;
         }
     }
-}
+};
+
+S.array = {
+    indexOfProperty(array, propertyName, value) {
+        for (var i = 0; i < array.length; i += 1) {
+            if (array[i][propertyName]) {
+                if (array[i][propertyName] === value) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+};
 
 S.iframe = function (selector) {
     var iframe = $(selector)[0];
