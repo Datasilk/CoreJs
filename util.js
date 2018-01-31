@@ -30,12 +30,24 @@
             $('#' + id).remove();
             $('head').append('<style id="' + id + '" type="text/css">' + css + "</style>");
         },
-    }
-};
+    },
+    str: {
+        isNumeric: function (str) {
+            return !isNaN(parseFloat(str)) && isFinite(str);
+        }
+    },
 
-S.util.str = {
-    isNumeric: function (str) {
-        return !isNaN(parseFloat(str)) && isFinite(str);
+    element: {
+        getClassId: function (elem, prefix) {
+            if (elem.length > 0) { elem = elem[0]; }
+            if (elem.className.length <= 0) { return null;}
+            if (prefix == null) { prefix = 'id-'; }
+            var id = elem.className.split(' ').filter(function (c) { return c.indexOf(prefix) == 0; });
+            if (id.length > 0) {
+                return parseInt(id[0].replace(prefix, ''));
+            }
+            return null;
+        }
     }
 };
 
