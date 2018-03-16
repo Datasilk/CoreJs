@@ -48,7 +48,7 @@
             }
             return null;
         }
-    }
+    },
 };
 
 S.math = {
