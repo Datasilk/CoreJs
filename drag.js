@@ -75,7 +75,6 @@
                         //by subtracting the element's height from the element's margin, which will
                         //cover the element's tracks & force siblings below (in the DOM) to be pushed upwards
                         elem.css({ marginBottom: -1 * (elem.height() + hideAreaOffset) });
-                        elem.css({ marginLeft: -1 * (elem.width() + hideAreaOffset) });
                     }
                 }
 
