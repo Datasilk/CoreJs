@@ -62,6 +62,12 @@
                     if (item.options.speed != null) {
                         speed = item.options.speed;
                     }
+                    if (item.options.offsetX) {
+                        pos.left += item.options.offsetX;
+                    }
+                    if (item.options.offsetY) {
+                        pos.top += item.options.offsetY;
+                    }
                     hideArea = item.options.hideArea || false;
                     hideAreaOffset = item.options.hideAreaOffset || 0;
                     if (hideArea == true) {
@@ -69,6 +75,7 @@
                         //by subtracting the element's height from the element's margin, which will
                         //cover the element's tracks & force siblings below (in the DOM) to be pushed upwards
                         elem.css({ marginBottom: -1 * (elem.height() + hideAreaOffset) });
+                        elem.css({ marginLeft: -1 * (elem.width() + hideAreaOffset) });
                     }
                 }
 
