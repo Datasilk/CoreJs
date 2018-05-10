@@ -1,5 +1,5 @@
 ﻿S.message = {
-    show: function(element, type, msg, fadein) {
+    show: function(element, type, msg, fadein, hideDelay, fadeout) {
         var types = 'error warning alert';
         var el = $(element);
         if (type != '' && type != null) {
@@ -17,7 +17,18 @@
         } else {
             el.css({ opacity: 1, height:'auto' }).show();
         }
-        
+        if (hideDelay != null) {
+            setTimeout(function () {
+                if (fadeout == true) {
+                    el.animate({ opacity: 0 }, {
+                        duration: 333,
+                        complete: function () {
+                            el.hide();
+                        }
+                    });
+                } else { el.hide(); }
+            }, hideDelay);
+        }
     },
 
     error: {
