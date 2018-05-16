@@ -62,6 +62,12 @@
                     if (item.options.speed != null) {
                         speed = item.options.speed;
                     }
+                    if (item.options.offsetX) {
+                        pos.left += item.options.offsetX;
+                    }
+                    if (item.options.offsetY) {
+                        pos.top += item.options.offsetY;
+                    }
                     hideArea = item.options.hideArea || false;
                     hideAreaOffset = item.options.hideAreaOffset || 0;
                     if (hideArea == true) {
