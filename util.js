@@ -3,13 +3,13 @@
         load: function (file, id, callback) {
             //add javascript file to DOM
             if (document.getElementById(id)) { if (callback) { callback(); } return false; }
-            var head = document.getElementsByTagName('head')[0];
+            var body = document.body;
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = file;
             script.id = id;
             script.onload = callback;
-            head.appendChild(script);
+            body.appendChild(script);
         }
     },
     css: {
