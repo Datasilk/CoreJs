@@ -1,6 +1,6 @@
 ﻿S.util = {
     js: {
-        load: function (file, id, callback) {
+        load: function (file, id, callback, error) {
             //add javascript file to DOM
             if (document.getElementById(id)) { if (callback) { callback(); } return false; }
             var body = document.body;
@@ -9,6 +9,7 @@
             script.src = file;
             script.id = id;
             script.onload = callback;
+            script.onerror = error;
             body.appendChild(script);
         }
     },
