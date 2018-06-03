@@ -14,7 +14,7 @@ Used alongside [Datasilk Core](http://www.github.com/Datasilk/Core), this JavaSc
 `S` is a global JavaScript object that is used as a "Super" object, containing a hierarchy of methods & properties used within a web application.
 
 ### Ajax.js
-Access RESTful web APIs and use `S.ajax.inject(data)` to load content into the DOM from the JSON response of a `Datasilk.Service.Response` web service object (found in [Datasilk Core](http://github.com/Datasilk/Core)). For example:
+Access RESTful web APIs and use `S.ajax.inject(data)` to load content into the DOM from the JSON response of a `Datasilk.Datasilk.Response` web service object (found in [Datasilk Core](http://github.com/Datasilk/Core)). For example:
 
 ```
 S.ajax.post('User/GetInfo', {userId:1, details:true, layout:3}, 
