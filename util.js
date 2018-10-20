@@ -1,15 +1,16 @@
 ﻿S.util = {
     js: {
-        load: function (file, id, callback) {
+        load: function (file, id, callback, error) {
             //add javascript file to DOM
             if (document.getElementById(id)) { if (callback) { callback(); } return false; }
-            var head = document.getElementsByTagName('head')[0];
+            var body = document.body;
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = file;
             script.id = id;
             script.onload = callback;
-            head.appendChild(script);
+            script.onerror = error;
+            body.appendChild(script);
         }
     },
     css: {
@@ -49,6 +50,18 @@
             return null;
         }
     },
+
+    location: {
+        queryString: function (key, url) {
+            if (!url) url = window.location.href;
+            key = key.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + key + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+    }
 };
 
 S.math = {
