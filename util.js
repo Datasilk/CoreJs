@@ -59,6 +59,9 @@ S.math = {
         } else {
             return false;
         }
+    },
+    clamp: function (num, min, max) {
+        return num <= min ? min : num >= max ? max : num;
     }
 };
 
