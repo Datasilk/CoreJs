@@ -134,7 +134,7 @@
         const scroll = S.scrollbar.selected;
         const movable = scroll.movable;
         let pos = movable.position();
-        let perc = (100 / (scroll.contentH - scroll.height)) * -(pos.top + px);
+        let perc = (100 / (scroll.contentH - scroll.height - 7)) * (-pos.top + px);
         S.scrollbar.to(perc);
     },
 
@@ -147,10 +147,10 @@
         const y = e.clientY;
         if (y < pos.top) {
             //above scrollbar
-            S.scrollbar.move(S.scrollbar.config.skip * 8);
+            S.scrollbar.move(-S.scrollbar.config.skip * 8);
         } else {
             //below scrollbar
-            S.scrollbar.move(-S.scrollbar.config.skip * 8);
+            S.scrollbar.move(S.scrollbar.config.skip * 8);
         }
     },
 
@@ -166,7 +166,7 @@
             delta = -e.detail / 2;
         }
         S.scrollbar.get(S.scrollbar.target(e.target), options);
-        S.scrollbar.move(delta * S.scrollbar.config.skip);
+        S.scrollbar.move(-delta * S.scrollbar.config.skip);
     },
 
     resize: function (container, options) {
