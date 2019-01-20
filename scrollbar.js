@@ -165,8 +165,11 @@
             // W3C
             delta = -e.detail / 2;
         }
-        S.scrollbar.get(S.scrollbar.target(e.target), options);
-        S.scrollbar.move(-delta * S.scrollbar.config.skip);
+        const target = S.scrollbar.target(e.target);
+        if ($(target).hasClass('scroll')) {
+            S.scrollbar.get(target, options);
+            S.scrollbar.move(-delta * S.scrollbar.config.skip);
+        }
     },
 
     resize: function (container, options) {
