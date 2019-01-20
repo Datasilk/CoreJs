@@ -91,8 +91,8 @@
         S.scrollbar.selected.scrolling = true;
 
         //bind events
-        $('body').on('mousemove', S.scrollbar.moving);
-        $('body').on('mouseup', S.scrollbar.stop);
+        $(window).on('mousemove', S.scrollbar.moving);
+        $(window).on('mouseup', S.scrollbar.stop);
 
         //animate scrollbar
         S.scrollbar.animate.call(S.scrollbar);
@@ -118,8 +118,8 @@
 
     stop: function () {
         S.scrollbar.selected.scrolling = false;
-        $('body').off('mousemove', S.scrollbar.moving);
-        $('body').off('mouseup', S.scrollbar.stop);
+        $(window).off('mousemove', S.scrollbar.moving);
+        $(window).off('mouseup', S.scrollbar.stop);
         S.scrollbar.selected.container.removeClass('scrolling');
     },
 
