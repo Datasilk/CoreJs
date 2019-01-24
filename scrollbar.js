@@ -1,12 +1,14 @@
 ﻿S.scrollbar = {
     config: { skip: 15 },
-    selected: { scrollable: null, height: null, itemsH: null, scrolling:false },
+    selected: { },
+    items: [],
 
     add: function (container, options) {
         //options = {
         //  footer (int || function): space between bottom of container & window edge
         //}
         //add custom scrollbar to container
+        var opts = options != null ? options : {};
         let c = $(container);
         c.addClass('scrollable');
 
@@ -15,11 +17,13 @@
             c.prepend('<div class="scroller"><div class="scrollbar"></div></div>');
         }
 
+        //add scrollbar to items list
+        S.scrollbar.items.push({ container: c, options: opts });
+
         //add events
-        var opts = options != null ? options : {};
         $(window).on('resize', (e) => S.scrollbar.resize(c, opts));
         c.find('.scrollbar').on('mousedown', (e) => S.scrollbar.start(e, opts));
-        c.find('.scroller').on('mousedown', (e) => S.scrollbar.bar(e, opts));
+        c.find('.scroller').on('mousedown', (e) => S.scrollbar.bar.start(e, opts));
         c.on('wheel', (e) => S.scrollbar.wheel(e, opts));
 
         //resize each container
@@ -55,7 +59,7 @@
             }
         }
         const height = win.h - pos.top - foot;
-        
+
         //show/hide list scrollbar
         let h = movable.height();
 
@@ -68,7 +72,8 @@
             movable: movable,
             contentH: h,
             offsetY: scroller.offset().top,
-            barY: scrollbar.offset().top
+            barY: scrollbar.offset().top,
+            options: options
         };
     },
 
@@ -138,19 +143,41 @@
         S.scrollbar.to(perc);
     },
 
-    bar: function (e, options) {
-        if ($(e.target).hasClass('scrollbar')) { return false;}
-        S.scrollbar.get(S.scrollbar.target(e.target), options);
-        const scroll = S.scrollbar.selected;
-        const scrollbar = scroll.scrollbar;
-        const pos = scrollbar.offset();
-        const y = e.clientY;
-        if (y < pos.top) {
-            //above scrollbar
-            S.scrollbar.move(-S.scrollbar.config.skip * 8);
-        } else {
-            //below scrollbar
-            S.scrollbar.move(S.scrollbar.config.skip * 8);
+    bar: {
+        timer: null,
+        start: function(e, options) {
+            if ($(e.target).hasClass('scrollbar')) { return false; }
+            S.scrollbar.get(S.scrollbar.target(e.target), options);
+            const scroll = S.scrollbar.selected;
+            const scrollbar = scroll.scrollbar;
+            const pos = scrollbar.offset();
+            const y = e.clientY;
+            let top = false;
+            if (y < pos.top) { top = true; }
+            S.scrollbar.bar.move(top);
+
+            //listen for mouse up
+            $(window).on('mouseup', S.scrollbar.bar.end);
+
+            //move bar in intervals if mouse is held down long enough
+            setTimeout(() => {
+                S.scrollbar.bar.timer = setInterval(() => S.scrollbar.bar.move(top), 50);
+            }, 300);
+        },
+
+        move: function (top) {
+            if (top === true) {
+                //above scrollbar
+                S.scrollbar.move(-S.scrollbar.config.skip * 8);
+            } else {
+                //below scrollbar
+                S.scrollbar.move(S.scrollbar.config.skip * 8);
+            }
+        },
+
+        end: function () {
+            clearInterval(S.scrollbar.bar.timer);
+            $(window).off('mouseup', S.scrollbar.bar.end);
         }
     },
 
@@ -206,5 +233,13 @@
                 }
             }
         };
+    },
+
+    update: function (container) {
+        const c = $(container);
+        let item = S.scrollbar.items.filter(a => a.container.filter((i, b) => c[0] == b).length > 0);
+        if (item.length == 0) { return; }
+        console.log(item);
+        S.scrollbar.resize(item[0].container, item[0].options);
     }
 };
