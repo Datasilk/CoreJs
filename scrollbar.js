@@ -8,6 +8,8 @@
         //  footer (int || function): space between bottom of container & window edge
         //}
         //add custom scrollbar to container
+        var mutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        var resizeObserver = window.ResizeObserver || window.WebKitResizeObserver;
         var opts = options != null ? options : {};
         let c = $(container);
         c.addClass('scrollable');
@@ -17,21 +19,45 @@
             c.prepend('<div class="scroller"><div class="scrollbar"></div></div>');
         }
 
-        //add scrollbar to items list
-        S.scrollbar.items.push({ container: c, options: opts });
-
         //add events
-        $(window).on('resize', (e) => S.scrollbar.resize(c, opts));
         c.find('.scrollbar').on('mousedown', (e) => S.scrollbar.start(e, opts));
         c.find('.scroller').on('mousedown', (e) => S.scrollbar.bar.start(e, opts));
         c.on('wheel', (e) => S.scrollbar.wheel(e, opts));
 
-        //resize each container
+        
         for (let x = 0; x < c.length; x++) {
-            S.scrollbar.resize($(c[x]), opts);
-            //hotfix: run resize method again since scrollbar 
-            //size might change after first adjustment
-            S.scrollbar.resize($(c[x]), opts);
+            let cn = $(c[x]);
+            //add scrollbar to items list
+            S.scrollbar.items.push({ container: $(cn), options: opts, percent: 0 });
+
+            //resize each container
+            S.scrollbar.resize($(cn), opts);
+
+            //add event listener for DOM changes within the container
+            let movable = $(cn).find('.movable');
+            let callback_resize = () => S.scrollbar.resize($(cn), opts);
+            if (mutationObserver) {
+                // define a new observer
+                var obs = new mutationObserver(function (mutations, observer) {
+                    callback_resize();
+                })
+                // have the observer observe foo for changes in children
+                obs.observe(movable[0], { attributes: true, childList: true, subtree: true });
+            }
+
+            else if (window.addEventListener) {
+                movable[0].addEventListener('DOMNodeInserted', callback_resize, false);
+                movable[0].addEventListener('DOMNodeRemoved', callback_resize, false);
+            }
+
+            //add event listener for container element node resize
+            if (resizeObserver) {
+                var obs = new resizeObserver(function (elements) {
+                    callback_resize();
+                })
+                // have the observer observe foo for changes in children
+                obs.observe(cn[0]);
+            }
         }
     },
 
@@ -63,7 +89,7 @@
         //show/hide list scrollbar
         let h = movable.height();
 
-        S.scrollbar.selected = {
+        return {
             scrollbar: scrollbar,
             height: height,
             foot: foot,
@@ -73,8 +99,10 @@
             contentH: h,
             offsetY: scroller.offset().top,
             barY: scrollbar.offset().top,
-            options: options
+            options: options,
+            index: S.scrollbar.items.map(a => a.container).findIndex(a => a.filter((i, b) => container[0] == b).length > 0)
         };
+
     },
 
     start: function (e, options) {
@@ -90,7 +118,7 @@
         container.addClass('scrolling');
 
         //update selected properties
-        S.scrollbar.get(target, options);
+        S.scrollbar.selected = S.scrollbar.get(target, options);
         S.scrollbar.selected.cursorY = e.clientY;
         S.scrollbar.selected.currentY = e.clientY;
         S.scrollbar.selected.scrolling = true;
@@ -110,9 +138,9 @@
 
     animate: function () {
         //steady animation of scrolling movement
-        const scroll = S.scrollbar.selected;
-        const curr = scroll.currentY - scroll.cursorY - (scroll.offsetY - scroll.barY);
-        let perc = (100 / (scroll.height - scroll.barHeight)) * curr;
+        const item = S.scrollbar.selected;
+        const curr = item.currentY - item.cursorY - (item.offsetY - item.barY);
+        let perc = (100 / (item.height - item.barHeight)) * curr;
         S.scrollbar.to(perc);
         requestAnimationFrame(() => {
             if (S.scrollbar.selected.scrolling == true) {
@@ -128,28 +156,28 @@
         S.scrollbar.selected.container.removeClass('scrolling');
     },
 
-    to: function (percent) {
-        const scroll = S.scrollbar.selected;
+    to: function (item, percent) {
         let perc = S.math.clamp(percent, 0, 100);
-        scroll.scrollbar.css({ top: ((scroll.height - 7 - scroll.barHeight) / 100) * perc });
-        scroll.movable.css({ top: -1 * (((scroll.contentH - scroll.height) / 100) * perc) });
+        S.scrollbar.items[item.index].percent = percent;
+        item.scrollbar.css({ top: ((item.height - 7 - item.barHeight) / 100) * perc });
+        item.movable.css({ top: -1 * (((item.contentH - item.height) / 100) * perc) });
     },
 
     move: function (px) {
-        const scroll = S.scrollbar.selected;
-        const movable = scroll.movable;
+        const item = S.scrollbar.selected;
+        const movable = item.movable;
         let pos = movable.position();
-        let perc = (100 / (scroll.contentH - scroll.height - 7)) * (-pos.top + px);
-        S.scrollbar.to(perc);
+        let perc = (100 / (item.contentH - item.height - 7)) * (-pos.top + px);
+        S.scrollbar.to(item, perc);
     },
 
     bar: {
         timer: null,
         start: function(e, options) {
             if ($(e.target).hasClass('scrollbar')) { return false; }
-            S.scrollbar.get(S.scrollbar.target(e.target), options);
-            const scroll = S.scrollbar.selected;
-            const scrollbar = scroll.scrollbar;
+            S.scrollbar.selected = S.scrollbar.get(S.scrollbar.target(e.target), options);
+            const item = S.scrollbar.selected;
+            const scrollbar = item.scrollbar;
             const pos = scrollbar.offset();
             const y = e.clientY;
             let top = false;
@@ -194,7 +222,7 @@
         }
         const target = S.scrollbar.target(e.target);
         if ($(target).hasClass('scroll')) {
-            S.scrollbar.get(target, options);
+            S.scrollbar.selected = S.scrollbar.get(target, options);
             S.scrollbar.move(-delta * S.scrollbar.config.skip);
         }
     },
@@ -202,36 +230,37 @@
     resize: function (container, options) {
         //resize list height
         const win = S.window.pos();
-        let foot = 0;
-        if (options.footer != null) {
-            if (typeof options.footer == 'function') {
-                foot = options.footer(container);
-            } else {
-                foot = options.footer;
+        
+        for (let x = 0; x < container.length; x++) {
+            const c = $(container[x]);
+            const movable = c.find('.movable');
+            const pos = c[0].getBoundingClientRect();
+            let foot = 0;
+            if (options.footer != null) {
+                if (typeof options.footer == 'function') {
+                    foot = options.footer(c);
+                } else {
+                    foot = options.footer;
+                }
             }
-        }
-
-        const scrollbars = container.find('.scrollbar');
-        for (let x = 0; x < scrollbars.length; x++) {
-            const box = $(S.scrollbar.target(scrollbars[x]));
-            const movable = box.find('.movable');
-            const pos = box[0].getBoundingClientRect();
             const height = win.h - pos.top - foot;
             let h = movable.height();
+            const item = S.scrollbar.get(c, options);
 
             if (h > height) {
                 //show scrollbar
-                box.addClass('scroll');
+                c.addClass('scroll');
                 //update scrollbar height
                 
-                box.find('.scroller').css({ height: height - 7 });
-                box.find('.scrollbar').css({ height: ((height - 7) / h) * height });
+                c.find('.scroller').css({ height: height - 7 });
+                c.find('.scrollbar').css({ height: ((height - 7) / h) * height });
             } else {
                 //hide scrollbar
-                if (box.hasClass('scroll')) {
-                    box.removeClass('scroll');
+                if (c.hasClass('scroll')) {
+                    c.removeClass('scroll');
                 }
             }
+            S.scrollbar.to(item, S.scrollbar.items[item.index].percent);
         };
     },
 
@@ -239,7 +268,6 @@
         const c = $(container);
         let item = S.scrollbar.items.filter(a => a.container.filter((i, b) => c[0] == b).length > 0);
         if (item.length == 0) { return; }
-        console.log(item);
         S.scrollbar.resize(item[0].container, item[0].options);
     }
 };
