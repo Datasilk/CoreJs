@@ -141,7 +141,7 @@
         const item = S.scrollbar.selected;
         const curr = item.currentY - item.cursorY - (item.offsetY - item.barY);
         let perc = (100 / (item.height - item.barHeight)) * curr;
-        S.scrollbar.to(perc);
+        S.scrollbar.to(item, perc);
         requestAnimationFrame(() => {
             if (S.scrollbar.selected.scrolling == true) {
                 S.scrollbar.animate.call(S.scrollbar);
