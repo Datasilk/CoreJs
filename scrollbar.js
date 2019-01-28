@@ -68,7 +68,7 @@
         }
     },
 
-    get: function (target, options) {
+    get: function (target) {
         const win = S.window.pos();
         const container = $(target);
         const scrollbar = container.find('.scrollbar');
@@ -77,11 +77,15 @@
         const pos = container[0].getBoundingClientRect();
         let foot = 0;
 
-        if (options.footer != null) {
-            if (typeof options.footer == 'function') {
-                foot = options.footer(container);
+        //get scrollbar item from cache
+        let index = S.scrollbar.items.map(a => a.container).findIndex(a => a.filter((i, b) => container[0] == b).length > 0);
+        let item = S.scrollbar.items[index];
+
+        if (item.options.footer != null) {
+            if (typeof item.options.footer == 'function') {
+                foot = item.options.footer(container);
             } else {
-                foot = options.footer;
+                foot = item.options.footer;
             }
         }
         const height = win.h - pos.top - foot;
@@ -99,8 +103,8 @@
             contentH: h,
             offsetY: scroller.offset().top,
             barY: scrollbar.offset().top,
-            options: options,
-            index: S.scrollbar.items.map(a => a.container).findIndex(a => a.filter((i, b) => container[0] == b).length > 0)
+            options: item.options,
+            index: index
         };
 
     },
@@ -118,7 +122,7 @@
         container.addClass('scrolling');
 
         //update selected properties
-        S.scrollbar.selected = S.scrollbar.get(target, options);
+        S.scrollbar.selected = S.scrollbar.get(target);
         S.scrollbar.selected.cursorY = e.clientY;
         S.scrollbar.selected.currentY = e.clientY;
         S.scrollbar.selected.scrolling = true;
@@ -175,7 +179,7 @@
         timer: null,
         start: function(e, options) {
             if ($(e.target).hasClass('scrollbar')) { return false; }
-            S.scrollbar.selected = S.scrollbar.get(S.scrollbar.target(e.target), options);
+            S.scrollbar.selected = S.scrollbar.get(S.scrollbar.target(e.target));
             const item = S.scrollbar.selected;
             const scrollbar = item.scrollbar;
             const pos = scrollbar.offset();
@@ -222,7 +226,7 @@
         }
         const target = S.scrollbar.target(e.target);
         if ($(target).hasClass('scroll')) {
-            S.scrollbar.selected = S.scrollbar.get(target, options);
+            S.scrollbar.selected = S.scrollbar.get(target);
             S.scrollbar.move(-delta * S.scrollbar.config.skip);
         }
     },
