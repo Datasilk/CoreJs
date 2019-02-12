@@ -10,4 +10,4 @@ S.util.color = {
         } else { hex = color; }
         return hex;
     }
-}
+};
