@@ -34,7 +34,6 @@
     },
 
     inject: function (response) {
-        console.log(response);
         var elem = $(response.selector);
         if (elem.length > 0 && response.html != '') {
             switch (response.type) {
