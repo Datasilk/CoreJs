@@ -5,7 +5,10 @@
 
     add: function (container, options) {
         //options = {
-        //  footer (int || function): space between bottom of container & window edge
+        //  footer (int || function): space between bottom of container & window edge,
+        //  touch (bool) //allows touch scrolling
+        //  touchStart: callback function(TouchEvent, options)
+        //  touchEnd: callback function(TouchEvent, options)
         //}
         //add custom scrollbar to container
         var mutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -23,6 +26,12 @@
         c.find('.scrollbar').on('mousedown', (e) => S.scrollbar.start(e, opts));
         c.find('.scroller').on('mousedown', (e) => S.scrollbar.bar.start(e, opts));
         c.on('wheel', (e) => S.scrollbar.wheel(e, opts));
+
+        if (options.touch === true) {
+            c.on('touchstart', (e) => S.scrollbar.touchstart(e, { ...opts, istouch: true }));
+            c.on('touchmove', (e) => S.scrollbar.touchmove(e, { ...opts, istouch: true }));
+            c.on('touchend', (e) => S.scrollbar.touchend(e, { ...opts, istouch: true }));
+        }
 
         
         for (let x = 0; x < c.length; x++) {
@@ -62,6 +71,8 @@
     },
 
     target: function (e) {
+        var target = $(e);
+        if (target.hasClass('.scrollable')) { return target; }
         let targets = $(e).parents('.scrollable');
         if (targets.length > 0) {
             return targets[0];
@@ -87,38 +98,45 @@
             } else {
                 foot = item.options.footer;
             }
+        } else {
+            foot = win.h - pos.top - pos.height;
         }
         const height = win.h - pos.top - foot;
 
         //show/hide list scrollbar
         let h = movable.height();
-
+        let barHeight = ((height - 7) / h) * height;
         return {
             scrollbar: scrollbar,
             height: height,
             foot: foot,
-            barHeight: ((height - 7) / h) * height,
+            barHeight: barHeight,
             container: container,
             movable: movable,
             contentH: h,
             offsetY: scroller.offset().top,
             barY: scrollbar.offset().top,
             options: item.options,
-            index: index
+            index: index,
+            diff: (1 / height) * ((height / h) * (height - 7))
         };
 
     },
 
     start: function (e, options) {
-        e.cancelBubble = true;
-        e.stopPropagation();
-        e.preventDefault();
+        if (!options.istouch === true) {
+            e.cancelBubble = true;
+            e.stopPropagation();
+            e.preventDefault();
+        }
 
         //get target container
         let target = S.scrollbar.target(e.target);
 
         //update class for container
         const container = $(target);
+        S.scrollbar.selected.container = null;
+        if (!container.hasClass('scroll')) { return;}
         container.addClass('scrolling');
 
         //update selected properties
@@ -127,12 +145,39 @@
         S.scrollbar.selected.currentY = e.clientY;
         S.scrollbar.selected.scrolling = true;
 
-        //bind events
-        $(window).on('mousemove', S.scrollbar.moving);
-        $(window).on('mouseup', S.scrollbar.stop);
+        console.log(S.scrollbar.selected.diff);
+
+        if (!options.istouch === true) {
+            //bind events
+            $(window).on('mousemove', S.scrollbar.moving);
+            $(window).on('mouseup', S.scrollbar.stop);
+        }
 
         //animate scrollbar
         S.scrollbar.animate.call(S.scrollbar);
+    },
+
+    touchstart: function (e, options) {
+        S.scrollbar.start(e.touches[0], options);
+        if (S.scrollbar.selected.container == null) { return; }
+        if (typeof options.touchStart == 'function') {
+            options.touchStart(e, options);
+        }
+    },
+
+    touchmove: function (e, options) {
+        var touch = e.touches[0];
+        var sel = S.scrollbar.selected;
+        S.scrollbar.selected.currentY = sel.cursorY + ((sel.cursorY - touch.clientY) * sel.diff);
+    },
+
+    touchend: function (e, options) {
+        if (S.scrollbar.selected.container == null) { return;}
+        S.scrollbar.selected.scrolling = false;
+        S.scrollbar.selected.container.removeClass('scrolling');
+        if (typeof options.touchEnd == 'function') {
+            options.touchEnd(e, options);
+        }
     },
 
     moving: function (e) {
@@ -144,7 +189,9 @@
         //steady animation of scrolling movement
         const item = S.scrollbar.selected;
         const curr = item.currentY - item.cursorY - (item.offsetY - item.barY);
-        let perc = (100 / (item.height - item.barHeight)) * curr;
+        let perc = (100 / (item.height - 7 - item.barHeight)) * curr;
+        if (perc < 0) { perc = 0; }
+        if (perc > 100) { perc = 100; }
         S.scrollbar.to(item, perc);
         requestAnimationFrame(() => {
             if (S.scrollbar.selected.scrolling == true) {
