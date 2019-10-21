@@ -145,8 +145,6 @@
         S.scrollbar.selected.currentY = e.clientY;
         S.scrollbar.selected.scrolling = true;
 
-        console.log(S.scrollbar.selected.diff);
-
         if (!options.istouch === true) {
             //bind events
             $(window).on('mousemove', S.scrollbar.moving);
