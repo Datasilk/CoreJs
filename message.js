@@ -8,7 +8,7 @@
             el.removeClass(types);
         }
         el.find('span').html(msg);
-        if (fadein !== false) {
+        if (fadein === true) {
             el.css({ opacity: 0, overflow:'hidden' }).show();
             var h = el.height();
             el.css({ height: 0, marginTop: 10, marginBottom: 10, paddingTop:0, paddingBottom:0 });
