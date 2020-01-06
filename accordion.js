@@ -1,17 +1,13 @@
 ﻿S.accordion = {
-    load: function () {
-        $('.accordion > .title').off('click').on('click', S.accordion.toggle);
+    load: function (ontoggle) {
+        $('.accordion > .title').off('click').on('click', (e) => {
+            S.accordion.toggle(e);
+            if (typeof ontoggle == 'function') { ontoggle(e); }
+        });
     },
 
-    toggle: function () {
-        $(this).toggleClass('expanded');
-        var box = $(this).parent().find('.box, .menu');
-        box.toggleClass('expanded');
-        if (box.hasClass('expanded')) {
-            $('html, body').animate({
-                scrollTop: $(this).offset().top
-            }, 700);
-        }
+    toggle: function (e) {
+        $(e.target).parents('.accordion').toggleClass('expanded');
     }
 };
 
