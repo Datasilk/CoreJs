@@ -5,13 +5,21 @@
 Used alongside [Datasilk Core](http://www.github.com/Datasilk/Core), this JavaScript framework is meant to be used by web applications as a starting point. 
 
 ## Requirements
- Either [Selector](http://github.com/websilk/selector), jQuery, or any functional jQuery clone.
+ Either [Selector](http://github.com/websilk/selector), jQuery, or any functional jQuery clone (Zepto, cash).
+
+## Installation
+1. clone into your project folder, preferrably into `/js/datasilk/`
+2. 
 
 ## Features
 > NOTE: All features have been tested on various modern web browsers, including Internet Explorer 9 and up.
 
 ### S
-`S` is a global JavaScript object that is used as a "Super" object, containing a hierarchy of methods & properties used within a web application.
+`S` is a global JavaScript object that is used as a "Super" object, containing a hierarchy of methods & properties used within your web application. 
+
+|Property|default|description|
+|---|---|
+|`S.root`|`''`|Specifies where the platform was installed relative to the project folder.|
 
 ### Ajax.js
 Access RESTful web APIs and use `S.ajax.inject(data)` to load content into the DOM from the JSON response of a `Datasilk.Datasilk.Response` web service object (found in [Datasilk Core](http://github.com/Datasilk/Core)). For example:

@@ -38,11 +38,11 @@
             forpopup.css({ padding: opts.padding });
         }
 
-        var scaffold = new S.scaffold($('#template_popup').html(), {
+        var view = new S.view($('#template_popup').html(), {
             title: title,
             body: html
         });
-        popup.html(scaffold.render());
+        popup.html(view.render());
         this.elem = popup;
 
         $('body > .for-popup .popup').remove();

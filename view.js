@@ -1,17 +1,23 @@
-﻿S.scaffold = function (html, vars, tagStart, tagEnd) {
+﻿/*
+example: var view = new S.view('<div>{{hello}}</div>', {hello:'world'});
+         view.render();
+*/
+S.viewTags = { startChar: '{{', endChar: '}}' }; //overridable property
+
+S.view = function (html, vars, tagStartChar, tagEndChar) {
     //tagStart & tagEnd is optional, defines the symbols (#)
-    //to use when searching for scaffold variable placeholders
+    //to use when searching for view variable placeholders
     this.html = html;
     this.vars = vars;
-    if (tagStart) {
-        this.tagStart = tagStart;
-    } else { this.tagStart = "#"; }
-    if (tagEnd) {
-        this.tagEnd = tagEnd;
-    } else { this.tagEnd = "#"; }
+    if (tagStartChar) {
+        this.tagStartChar = tagStartChar;
+    } else { this.tagStartChar = S.viewTags.startChar; }
+    if (tagEndChar) {
+        this.tagEndChar = tagEndChar;
+    } else { this.tagEndChar = S.viewTags.endChar; }
 }
 
-S.scaffold.prototype.render = function () {
+S.view.prototype.render = function () {
     var a = 0, b = 0, c = 0, d = 0;
     var tagslen = this.tagStart.length + this.tagEnd.length;
     var endlen = this.tagEnd.length;
@@ -21,10 +27,10 @@ S.scaffold.prototype.render = function () {
         ischanged = true;
         while (ischanged) {
             ischanged = false;
-            //check for scaffold closing first
+            //check for view closing first
             a = htm.indexOf(this.tagStart + '/' + key + this.tagEnd);
             if (a >= 0) {
-                //found a group of html to show or hide based on scaffold element boolean value
+                //found a group of html to show or hide based on view element boolean value
                 b = a + tagslen + key.length + 1;
                 c = htm.indexOf(this.tagStart + key);
                 d = htm.indexOf(this.tagEnd, c + 1);
@@ -41,7 +47,7 @@ S.scaffold.prototype.render = function () {
                     continue;
                 }
             }
-            //check for scaffold element to replace with a value
+            //check for view element to replace with a value
             if (ischanged == false) {
                 if (htm.indexOf(this.tagStart + key + this.tagEnd) >= 0) {
                     htm = htm.replace(this.tagStart + key + this.tagEnd, this.vars[key]);
