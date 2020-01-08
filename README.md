@@ -5,14 +5,15 @@
 Used alongside [Datasilk Core](http://www.github.com/Datasilk/Core), this JavaScript framework is meant to be used by web applications as a starting point. 
 
 ## Requirements
- Either [Selector](http://github.com/websilk/selector), jQuery, or any functional jQuery clone (Zepto, cash).
+ * Use [Selector](http://github.com/websilk/selector), jQuery, or a jQuery clone (Zepto, cash) within your web application.
 
 ## Installation
-1. clone into your project folder, preferrably into `/js/datasilk/`
-2. 
+1. clone into your project folder, preferrably into `/scripts/datasilk/`
+2. (optional) copy `assets` folder into your public web root folder, preferrably into `/wwwroot/datasilk/`
 
 ## Features
-> NOTE: All features have been tested on various modern web browsers, including Internet Explorer 9 and up.
+Datasilk Core JS uses a modular system combined with `gulpfile.js`, allowing developers to quickly modify and compile their own build of the Datasilk Core `platform.js` file using [Gulp](https://www.gulpjs.com').
+
 
 ### S
 `S` is a global JavaScript object that is used as a "Super" object, containing a hierarchy of methods & properties used within your web application. 

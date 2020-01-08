@@ -17,24 +17,24 @@ paths.platform = paths.scripts + 'datasilk/';
 paths.working = {
     js: {
         platform: [
-            paths.platform + 'selector/selector.js',
-            paths.platform + 'utility/velocity.min.js', //optional 3rd-party library for animation
-            paths.platform + 'platform/_super.js', // <---- Datasilk Core Js: S object
-            paths.platform + 'platform/ajax.js', //   <---- Optional platform features
-            //paths.platform + 'platform/accordion.js',
-            //paths.platform + 'platform/clipboard.js',
-            paths.platform + 'platform/loader.js',
-            paths.platform + 'platform/message.js',
-            //paths.platform + 'platform/polyfill.js',
-            paths.platform + 'platform/popup.js',
-            paths.platform + 'platform/svg.js',
-            //paths.platform + 'platform/upload.js',
-            paths.platform + 'platform/util.js',
-            //paths.platform + 'platform/util.color.js',
-            //paths.platform + 'platform/util.file.js',
-            //paths.platform + 'platform/validate.js',
-            paths.platform + 'platform/window.js',
-            paths.platform + 'platform/view.js' //  <---- End of Optional features
+            paths.scripts + 'selector/selector.js',
+            paths.scripts + 'utility/velocity.min.js', //optional 3rd-party library for animation
+            paths.platform + '_super.js', // <---- Datasilk Core Js: S object
+            paths.platform + 'ajax.js', //   <---- Optional platform features
+            //paths.platform + 'accordion.js',
+            //paths.platform + 'clipboard.js',
+            paths.platform + 'loader.js',
+            paths.platform + 'message.js',
+            //paths.platform + 'polyfill.js',
+            paths.platform + 'popup.js',
+            paths.platform + 'svg.js',
+            //paths.platform + 'upload.js',
+            paths.platform + 'util.js',
+            //paths.platform + 'util.color.js',
+            //paths.platform + 'util.file.js',
+            //paths.platform + 'validate.js',
+            paths.platform + 'window.js',
+            paths.platform + 'view.js' //  <---- End of Optional features
         ],
         app: paths.app + '**/*.js',
         utility: [
