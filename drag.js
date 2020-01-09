@@ -21,6 +21,12 @@
         this.items.push({ elem: elem, dragElem: dragElem, onStart: onStart, onDrag: onDrag, onStop: onStop, onClick: onClick, options: options });
         var x = this.items.length - 1;
         $(elem).on('mousedown', function (e) { S.drag.events.start.call(S.drag, x, e) });
+
+        if (options.touch === true) {
+            c.on('touchstart', (e) => S.drag.events.touchstart(x, e, { ...opts, istouch: true }));
+            c.on('touchmove', (e) => S.drag.events.touchmove(x, e, { ...opts, istouch: true }));
+            c.on('touchend', (e) => S.drag.events.touchend(x, e, { ...opts, istouch: true }));
+        }
     },
 
     has: function (elem) {
@@ -196,6 +202,30 @@
             if (typeof item.onStop == 'function') {
                 item.onStop.call(item.options ? (item.options.callee ? item.options.callee : this) : this, item);
             }
-        }
+        },
+
+        touchstart: function (index, e, options) {
+            S.drag.events.start(index, e.touches[0]);
+            if (typeof options.touchStart == 'function') {
+                options.touchStart(index, e, options);
+            }
+        },
+
+        touchmove: function (index, e, options) {
+            var touch = e.touches[0];
+            var sel = S.scrollbar.selected;
+            S.scrollbar.selected.currentY = sel.cursorY + ((sel.cursorY - touch.clientY) * sel.diff);
+            if (typeof options.touchMove == 'function') {
+                options.touchMove(index, e, options);
+            }
+        },
+
+        touchend: function (index, e, options) {
+            S.scrollbar.selected.scrolling = false;
+            S.scrollbar.selected.container.removeClass('scrolling');
+            if (typeof options.touchEnd == 'function') {
+                options.touchEnd(index, e, options);
+            }
+        },
     }
 };

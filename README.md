@@ -22,6 +22,25 @@ Datasilk Core JS uses a modular system combined with `gulpfile.js`, allowing dev
 |---|---|
 |`S.root`|`''`|Specifies where the platform was installed relative to the project folder.|
 
+### Accordion.js
+Simple module that toggles an HTML element to display or hide when clicking on a target element. This can be combined to show and hide list items, menu items, and to show more detailed information when clicking a button.
+
+```
+<style>
+	.accordion .contents{display:none;}
+	.accordion.expanded .contents{display:block;}
+</style>
+<div class="accordion">
+	<div class="title">Hello</div>
+	<div class="contents">
+		World!	
+	</div>
+</div>
+```
+```
+	S.accordion.load({container: '.accordion', target: '.accordion .title', ontoggle: (e, show) => {} });
+```
+
 ### Ajax.js
 Access RESTful web APIs and use `S.ajax.inject(data)` to load content into the DOM from the JSON response of a `Datasilk.Datasilk.Response` web service object (found in [Datasilk Core](http://github.com/Datasilk/Core)). For example:
 
@@ -42,6 +61,15 @@ Display an SVG spinning loader animation on the page. For example:
 ```
 $('body').html(S.loader({padding:5}));
 ```
+
+### Clipboard.js
+Copy text to the OS clipboard.
+```
+S.clipboard.copy('copy me please');
+```
+
+### Drag.js
+Drag elements using an input like a mouse or touch screen
 
 ### Message.js
 Display a message on the page, such as an error or confirmation message above a form. For example:
