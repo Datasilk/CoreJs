@@ -5,7 +5,7 @@ example: var view = new S.view('<div>{{hello}}</div>', {hello:'world'});
 S.viewTags = { startChar: '{{', endChar: '}}' }; //overridable property
 
 S.view = function (html, vars, tagStartChar, tagEndChar) {
-    //tagStart & tagEnd is optional, defines the symbols (#)
+    //tagStartChar & tagEndChar is optional, defines the symbols (#)
     //to use when searching for view variable placeholders
     this.html = html;
     this.vars = vars;
@@ -19,8 +19,8 @@ S.view = function (html, vars, tagStartChar, tagEndChar) {
 
 S.view.prototype.render = function () {
     var a = 0, b = 0, c = 0, d = 0;
-    var tagslen = this.tagStart.length + this.tagEnd.length;
-    var endlen = this.tagEnd.length;
+    var tagslen = this.tagStartChar.length + this.tagEndChar.length;
+    var endlen = this.tagEndChar.length;
     var htm = this.html;
     var ischanged = true;
     for (var key in this.vars) {
@@ -28,12 +28,12 @@ S.view.prototype.render = function () {
         while (ischanged) {
             ischanged = false;
             //check for view closing first
-            a = htm.indexOf(this.tagStart + '/' + key + this.tagEnd);
+            a = htm.indexOf(this.tagStartChar + '/' + key + this.tagEndChar);
             if (a >= 0) {
                 //found a group of html to show or hide based on view element boolean value
                 b = a + tagslen + key.length + 1;
-                c = htm.indexOf(this.tagStart + key);
-                d = htm.indexOf(this.tagEnd, c + 1);
+                c = htm.indexOf(this.tagStartChar + key);
+                d = htm.indexOf(this.tagEndChar, c + 1);
                 if (c >= 0 && d > c) {
                     if (this.vars[key] === false) {
                         //hide group of html
@@ -49,8 +49,8 @@ S.view.prototype.render = function () {
             }
             //check for view element to replace with a value
             if (ischanged == false) {
-                if (htm.indexOf(this.tagStart + key + this.tagEnd) >= 0) {
-                    htm = htm.replace(this.tagStart + key + this.tagEnd, this.vars[key]);
+                if (htm.indexOf(this.tagStartChar + key + this.tagEndChar) >= 0) {
+                    htm = htm.replace(this.tagStartChar + key + this.tagEndChar, this.vars[key]);
                     ischanged = true;
                 }
             }

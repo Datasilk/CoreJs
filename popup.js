@@ -41,7 +41,7 @@
         var view = new S.view($('#template_popup').html(), {
             title: title,
             body: html
-        });
+        }, "#", "#");
         popup.html(view.render());
         this.elem = popup;
 
