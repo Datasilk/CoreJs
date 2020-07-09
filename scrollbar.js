@@ -27,7 +27,7 @@
         c.find('.scroller').on('mousedown', (e) => S.scrollbar.bar.start(e, opts));
         c.on('wheel', (e) => S.scrollbar.wheel(e, opts));
 
-        if (options.touch === true) {
+        if (opts.touch === true) {
             c.on('touchstart', (e) => S.scrollbar.touchstart(e, { ...opts, istouch: true }));
             c.on('touchmove', (e) => S.scrollbar.touchmove(e, { ...opts, istouch: true }));
             c.on('touchend', (e) => S.scrollbar.touchend(e, { ...opts, istouch: true }));
