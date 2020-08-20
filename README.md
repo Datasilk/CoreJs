@@ -92,24 +92,6 @@ View a popup window above all the content on the web page. For example:
 S.popup.show("New User", template_html, {offsetTop:-50, className:"new-user"});
 ```
 
-### Scaffold.js
-Load HTML content on the page while replacing `mustache` variables & blocks with dynamic data.
-
-For example:
-
-```
-<script type="text/html" id="template_element">
-    <div class="element">{{title}}</div>
-    <div class="field"><input type="text" value="{{value}}"></div>
-</script>
-
-<script>
-    var vars = {title: "Hello", value: "World"};
-    var scaffold = new S.scaffold($('#template_element).val(), vars);
-    $('body').append(scaffold.render());
-</script>
-```
-
 ### Util.js
 Various utility functions, such as loading JavaScript & CSS files, injecting raw JavaScript code from a string, and injecting raw CSS styling from a string. For example:
 
@@ -122,6 +104,24 @@ Various color functions, such as converting RGB into HEX.
 
 ### Validate.js
 Used for validating different kinds of data, such as an email address, credit card, or phone number
+
+### View.js
+Load HTML content on the page while replacing `mustache` variables & blocks with dynamic data.
+
+For example:
+
+```
+<script type="text/html" id="template_element">
+    <div class="element">{{title}}</div>
+    <div class="field"><input type="text" value="{{value}}"></div>
+</script>
+
+<script>
+    var vars = {title: "Hello", value: "World"};
+    var view = new S.View($('#template_element).val(), vars);
+    $('body').append(view.render());
+</script>
+```
 
 ### Window.js
 An accurate representation of the web browser window bounds & scroll positions.
