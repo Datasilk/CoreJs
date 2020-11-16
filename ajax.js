@@ -33,33 +33,33 @@
         }
     },
 
-    inject: function (element, data) {
-        var elem = $(element);
-        if (elem.length > 0 && data.d.html != '') {
-            switch (data.d.inject) {
+    inject: function (response) {
+        var elem = $(response.selector);
+        if (elem.length > 0 && response.html != '') {
+            switch (response.type) {
                 case 0: //replace
-                    elem.html(data.d.html);
+                    elem.html(response.html);
                     break;
                 case 1: //append
-                    elem.append(data.d.html);
+                    elem.append(response.html);
                     break;
                 case 2: //before
-                    elem.before(data.d.html);
+                    elem.before(response.html);
                     break;
                 case 3: //after
-                    elem.after(data.d.html);
+                    elem.after(response.html);
                     break;
             }
         }
 
         //add any CSS to the page
-        if (data.d.css && data.d.css != '') {
-            S.util.css.add(data.d.cssid, data.d.css);
+        if (response.css && response.css != '') {
+            S.util.css.add(response.cssid, response.css);
         }
 
         //finally, execute callback javascript
-        if (data.d.javascript && data.d.javascript != '') {
-            var js = new Function(data.d.javascript);
+        if (response.javascript && response.javascript != '') {
+            var js = new Function(response.javascript);
             js();
         }
     },

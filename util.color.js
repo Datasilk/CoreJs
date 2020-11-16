@@ -9,5 +9,9 @@ S.util.color = {
             hex = "#" + toHex(c[0]) + toHex(c[1]) + toHex(c[2]);
         } else { hex = color; }
         return hex;
+    },
+
+    argbToInt: function (a, r, g, b) {
+        return (a << 24) + (r << 16) + (g << 8) + (b);
     }
-}
+};

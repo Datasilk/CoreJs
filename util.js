@@ -1,15 +1,16 @@
 ﻿S.util = {
     js: {
-        load: function (file, id, callback) {
+        load: function (file, id, callback, error) {
             //add javascript file to DOM
             if (document.getElementById(id)) { if (callback) { callback(); } return false; }
-            var head = document.getElementsByTagName('head')[0];
+            var body = document.body;
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = file;
             script.id = id;
             script.onload = callback;
-            head.appendChild(script);
+            script.onerror = error;
+            body.appendChild(script);
         }
     },
     css: {
@@ -34,19 +35,38 @@
     str: {
         isNumeric: function (str) {
             return !isNaN(parseFloat(str)) && isFinite(str);
+        },
+        Capitalize: function (str) {
+            var list = str.split(' ');
+            for (var x = 0; x < list.length; x++) {
+                list[x] = list[x].charAt(0).toUpperCase() + list[x].slice(1);
+            }
+            return list.join(' ');
         }
     },
 
     element: {
         getClassId: function (elem, prefix) {
             if (elem.length > 0) { elem = elem[0]; }
-            if (elem.className.length <= 0) { return null;}
+            if (elem.className.length <= 0) { return null; }
             if (prefix == null) { prefix = 'id-'; }
             var id = elem.className.split(' ').filter(function (c) { return c.indexOf(prefix) == 0; });
             if (id.length > 0) {
                 return parseInt(id[0].replace(prefix, ''));
             }
             return null;
+        }
+    },
+
+    location: {
+        queryString: function (key, url) {
+            if (!url) url = window.location.href;
+            key = key.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + key + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
         }
     }
 };
@@ -59,6 +79,9 @@ S.math = {
         } else {
             return false;
         }
+    },
+    clamp: function (num, min, max) {
+        return num <= min ? min : num >= max ? max : num;
     }
 };
 

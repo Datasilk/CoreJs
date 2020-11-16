@@ -13,10 +13,20 @@
     },
 
     add: function (elem, dragElem, onStart, onDrag, onStop, onClick, options) {
-        //options = { boundTop:0 , boundRight:0 , boundLeft:0 , boundRight:0, useElemPos:false, callee:S.drag, hideArea: false, hideAreaOffset: 0 }
+        /* options = { 
+         * boundTop:0 , boundRight:0 , boundLeft:0 , boundRight:0, 
+         * useElemPos:false, callee:S.drag, offsetX: 0, offsetY: 0,
+         * hideArea: false, hideAreaOffset: 0 , delay:200, speed: 1000 / 30
+         * } */
         this.items.push({ elem: elem, dragElem: dragElem, onStart: onStart, onDrag: onDrag, onStop: onStop, onClick: onClick, options: options });
         var x = this.items.length - 1;
         $(elem).on('mousedown', function (e) { S.drag.events.start.call(S.drag, x, e) });
+
+        if (options.touch === true) {
+            c.on('touchstart', (e) => S.drag.events.touchstart(x, e, { ...opts, istouch: true }));
+            c.on('touchmove', (e) => S.drag.events.touchmove(x, e, { ...opts, istouch: true }));
+            c.on('touchend', (e) => S.drag.events.touchend(x, e, { ...opts, istouch: true }));
+        }
     },
 
     has: function (elem) {
@@ -62,6 +72,12 @@
                     if (item.options.speed != null) {
                         speed = item.options.speed;
                     }
+                    //if (item.options.offsetX) {
+                    //    pos.left += item.options.offsetX;
+                    //}
+                    //if (item.options.offsetY) {
+                    //    pos.top += item.options.offsetY;
+                    //}
                     hideArea = item.options.hideArea || false;
                     hideAreaOffset = item.options.hideAreaOffset || 0;
                     if (hideArea == true) {
@@ -94,6 +110,10 @@
                         w: elem.width(),
                         h: elem.height()
                     },
+                    offset: {
+                        x: item.options.offsetX || 0,
+                        y: item.options.offsetY || 0
+                    },
                     parent: {
                         y: parentPos.top,
                         y1: parentPos.top
@@ -109,7 +129,7 @@
                 }
 
                 //set up document-level drag events
-                $(document).on('mousemove', S.drag.events.doc.move);
+                $(window).on('mousemove', S.drag.events.doc.move);
                 
                 S.drag.events.drag.call(S.drag);
                 clearInterval(this.timer);
@@ -117,7 +137,7 @@
             }, delay);
 
             //set up document-level click event
-            $(document).on('mouseup', S.drag.events.doc.up);
+            $(window).on('mouseup', S.drag.events.doc.up);
 
             //don't let drag event select text on the page
             if (e.stopPropagation) e.stopPropagation();
@@ -141,8 +161,8 @@
         drag: function () {
             var item = this.item;
             if (item.hasOnDrag == true) { if (this.items[item.index].onDrag.call(item.options ? (item.options.callee ? item.options.callee : this) : this, item) == false) { return; } }
-            var x = (item.pos.x + (item.cursor.x - item.start.x));
-            var y = (item.pos.y + (item.cursor.y - item.start.y) - (item.parent.y - item.parent.y1));
+            var x = (item.pos.x + item.offset.x + (item.cursor.x - item.start.x));
+            var y = (item.pos.y + item.offset.y + (item.cursor.y - item.start.y) - (item.parent.y - item.parent.y1));
             if (item.options) {
                 if (item.options.boundTop != null) {
                     if (item.options.boundTop > y) { y = item.options.boundTop; }
@@ -163,7 +183,7 @@
 
         stop: function (index) {
             var item = S.drag.items[S.drag.item.index];
-            $(document).off('mouseup', S.drag.events.doc.up);
+            $(window).off('mouseup', S.drag.events.doc.up);
             if (this.timer == null) {
                 //user click
                 clearTimeout(this.timerStart);
@@ -175,13 +195,37 @@
             }
             clearInterval(this.timer);
             this.timer == null;
-            $(document).off('mousemove', S.drag.events.doc.move);
+            $(window).off('mousemove', S.drag.events.doc.move);
             if (S.drag.item.hideArea == true) {
                 S.drag.item.elem.css({ marginBottom: 0 });
             }
             if (typeof item.onStop == 'function') {
                 item.onStop.call(item.options ? (item.options.callee ? item.options.callee : this) : this, item);
             }
-        }
+        },
+
+        touchstart: function (index, e, options) {
+            S.drag.events.start(index, e.touches[0]);
+            if (typeof options.touchStart == 'function') {
+                options.touchStart(index, e, options);
+            }
+        },
+
+        touchmove: function (index, e, options) {
+            var touch = e.touches[0];
+            var sel = S.scrollbar.selected;
+            S.scrollbar.selected.currentY = sel.cursorY + ((sel.cursorY - touch.clientY) * sel.diff);
+            if (typeof options.touchMove == 'function') {
+                options.touchMove(index, e, options);
+            }
+        },
+
+        touchend: function (index, e, options) {
+            S.scrollbar.selected.scrolling = false;
+            S.scrollbar.selected.container.removeClass('scrolling');
+            if (typeof options.touchEnd == 'function') {
+                options.touchEnd(index, e, options);
+            }
+        },
     }
 };
