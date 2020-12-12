@@ -49,6 +49,9 @@
                 case 3: //after
                     elem.after(response.html);
                     break;
+                case 4: //prepend
+                    elem.prepend(response.html);
+                    break;
             }
         }
 
