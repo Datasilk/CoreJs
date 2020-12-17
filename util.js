@@ -28,8 +28,8 @@
 
         add: function (id, css) {
             //add raw CSS to the page inside a style tag
-            S('#' + id).remove();
-            S('head').append('<style id="' + id + '" type="text/css">' + css + "</style>");
+            $('#' + id).remove();
+            $('head').append('<style id="' + id + '" type="text/css">' + css + "</style>");
         },
     },
     str: {
@@ -99,7 +99,7 @@ S.array = {
 };
 
 S.iframe = function (selector) {
-    var iframe = S(selector)[0];
+    var iframe = $(selector)[0];
     var doc = null;
     if (iframe.contentDocument) { doc = iframe.contentDocument; }
     else if (iframe.contentWindow) { doc = iframe.contentWindow; }

@@ -6,14 +6,14 @@
 if (!window.S) {
     window['S'] = function (selector) {
         //use jQuery-like $ library as a backup if we're not using S
-        return S(selector);
+        return $(selector);
     }
 }
 S.root = ''; //where to load assets from (e.g. '/datasilk/js/')
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-S(window).on('resize', function () { S.window.changed = true; });
-S(window).on('scroll', function () { S.window.changed = true; });
+$(window).on('resize', function () { S.window.changed = true; });
+$(window).on('scroll', function () { S.window.changed = true; });
 
 

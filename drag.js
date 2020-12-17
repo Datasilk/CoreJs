@@ -20,7 +20,7 @@
          * } */
         this.items.push({ elem: elem, dragElem: dragElem, onStart: onStart, onDrag: onDrag, onStop: onStop, onClick: onClick, options: options });
         var x = this.items.length - 1;
-        S(elem).on('mousedown', function (e) { S.drag.events.start.call(S.drag, x, e) });
+        $(elem).on('mousedown', function (e) { S.drag.events.start.call(S.drag, x, e) });
 
         if (options.touch === true) {
             c.on('touchstart', (e) => S.drag.events.touchstart(x, e, { ...opts, istouch: true }));
@@ -56,12 +56,12 @@
             this.timer = null;
             this.timerStart = setTimeout(function () {
                 //allow a delay for user click before starting drag animation
-                var el = S(item.elem);
-                var elem = S(item.dragElem);
+                var el = $(item.elem);
+                var elem = $(item.dragElem);
                 var elpos = el.offset();
                 var pos = elem.position();
                 var parentPos = elem.parent().offset();
-                var win = S(window);
+                var win = $(window);
                 var speed = 1000 / 30;
                 var hideArea = false;
                 var hideAreaOffset = 0;
@@ -129,7 +129,7 @@
                 }
 
                 //set up document-level drag events
-                S(window).on('mousemove', S.drag.events.doc.move);
+                $(window).on('mousemove', S.drag.events.doc.move);
                 
                 S.drag.events.drag.call(S.drag);
                 clearInterval(this.timer);
@@ -137,7 +137,7 @@
             }, delay);
 
             //set up document-level click event
-            S(window).on('mouseup', S.drag.events.doc.up);
+            $(window).on('mouseup', S.drag.events.doc.up);
 
             //don't let drag event select text on the page
             if (e.stopPropagation) e.stopPropagation();
@@ -183,7 +183,7 @@
 
         stop: function (index) {
             var item = S.drag.items[S.drag.item.index];
-            S(window).off('mouseup', S.drag.events.doc.up);
+            $(window).off('mouseup', S.drag.events.doc.up);
             if (this.timer == null) {
                 //user click
                 clearTimeout(this.timerStart);
@@ -195,7 +195,7 @@
             }
             clearInterval(this.timer);
             this.timer == null;
-            S(window).off('mousemove', S.drag.events.doc.move);
+            $(window).off('mousemove', S.drag.events.doc.move);
             if (S.drag.item.hideArea == true) {
                 S.drag.item.elem.css({ marginBottom: 0 });
             }

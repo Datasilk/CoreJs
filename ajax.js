@@ -32,12 +32,12 @@ S.ajax.post = function (url, data, callback, error, json, opts) {
     if (json == true) { options.dataType = 'json'; }
     S.ajax.queue.push(options);
     if (S.ajax.queue.length == 1) {
-        S.ajax(options);
+        $.ajax(options);
     }
 };
 
 S.ajax.inject = function (response) {
-    var elem = S(response.selector);
+    var elem = $(response.selector);
     if (elem.length > 0 && response.html != '') {
         switch (response.type) {
             case 0: //replace
@@ -73,6 +73,6 @@ S.ajax.inject = function (response) {
 S.ajax.runQueue = function () {
     S.ajax.queue.shift();
     if (S.ajax.queue.length > 0) {
-        S.ajax(S.ajax.queue[0]);
+        $.ajax(S.ajax.queue[0]);
     }
 };

@@ -1,7 +1,7 @@
 ﻿S.message = {
     show: function(element, type, msg, fadein, hideDelay, fadeout) {
         var types = 'error warning alert';
-        var el = S(element);
+        var el = $(element);
         if (type != '' && type != null) {
             el.removeClass(types).addClass(type);
         } else {

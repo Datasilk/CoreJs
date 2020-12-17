@@ -14,7 +14,7 @@
         var mutationObserver = window.MutationObserver || window.WebKitMutationObserver;
         var resizeObserver = window.ResizeObserver || window.WebKitResizeObserver;
         var opts = options != null ? options : {};
-        let c = S(container);
+        let c = $(container);
         c.addClass('scrollable');
 
         if (c.find('.scroller').length == 0) {
@@ -35,16 +35,16 @@
 
         
         for (let x = 0; x < c.length; x++) {
-            let cn = S(c[x]);
+            let cn = $(c[x]);
             //add scrollbar to items list
-            S.scrollbar.items.push({ container: S(cn), options: opts, percent: 0 });
+            S.scrollbar.items.push({ container: $(cn), options: opts, percent: 0 });
 
             //resize each container
-            S.scrollbar.resize(S(cn), opts);
+            S.scrollbar.resize($(cn), opts);
 
             //add event listener for DOM changes within the container
-            let movable = S(cn).find('.movable');
-            let callback_resize = () => S.scrollbar.resize(S(cn), opts);
+            let movable = $(cn).find('.movable');
+            let callback_resize = () => S.scrollbar.resize($(cn), opts);
             if (mutationObserver) {
                 // define a new observer
                 var obs = new mutationObserver(function (mutations, observer) {
@@ -71,9 +71,9 @@
     },
 
     target: function (e) {
-        var target = S(e);
+        var target = $(e);
         if (target.hasClass('.scrollable')) { return target; }
-        let targets = S(e).parents('.scrollable');
+        let targets = $(e).parents('.scrollable');
         if (targets.length > 0) {
             return targets[0];
         }
@@ -81,7 +81,7 @@
 
     get: function (target) {
         const win = S.window.pos();
-        const container = S(target);
+        const container = $(target);
         const scrollbar = container.find('.scrollbar');
         const movable = container.find('.movable');
         const scroller = container.find('.scroller');
@@ -134,7 +134,7 @@
         let target = S.scrollbar.target(e.target);
 
         //update class for container
-        const container = S(target);
+        const container = $(target);
         S.scrollbar.selected.container = null;
         if (!container.hasClass('scroll')) { return;}
         container.addClass('scrolling');
@@ -147,8 +147,8 @@
 
         if (!options.istouch === true) {
             //bind events
-            S(window).on('mousemove', S.scrollbar.moving);
-            S(window).on('mouseup', S.scrollbar.stop);
+            $(window).on('mousemove', S.scrollbar.moving);
+            $(window).on('mouseup', S.scrollbar.stop);
         }
 
         //animate scrollbar
@@ -200,8 +200,8 @@
 
     stop: function () {
         S.scrollbar.selected.scrolling = false;
-        S(window).off('mousemove', S.scrollbar.moving);
-        S(window).off('mouseup', S.scrollbar.stop);
+        $(window).off('mousemove', S.scrollbar.moving);
+        $(window).off('mouseup', S.scrollbar.stop);
         S.scrollbar.selected.container.removeClass('scrolling');
     },
 
@@ -223,7 +223,7 @@
     bar: {
         timer: null,
         start: function(e, options) {
-            if (S(e.target).hasClass('scrollbar')) { return false; }
+            if ($(e.target).hasClass('scrollbar')) { return false; }
             S.scrollbar.selected = S.scrollbar.get(S.scrollbar.target(e.target));
             const item = S.scrollbar.selected;
             const scrollbar = item.scrollbar;
@@ -234,7 +234,7 @@
             S.scrollbar.bar.move(top);
 
             //listen for mouse up
-            S(window).on('mouseup', S.scrollbar.bar.end);
+            $(window).on('mouseup', S.scrollbar.bar.end);
 
             //move bar in intervals if mouse is held down long enough
             setTimeout(() => {
@@ -254,7 +254,7 @@
 
         end: function () {
             clearInterval(S.scrollbar.bar.timer);
-            S(window).off('mouseup', S.scrollbar.bar.end);
+            $(window).off('mouseup', S.scrollbar.bar.end);
         }
     },
 
@@ -270,7 +270,7 @@
             delta = -e.detail / 2;
         }
         const target = S.scrollbar.target(e.target);
-        if (S(target).hasClass('scroll')) {
+        if ($(target).hasClass('scroll')) {
             S.scrollbar.selected = S.scrollbar.get(target);
             S.scrollbar.move(-delta * S.scrollbar.config.skip);
         }
@@ -281,7 +281,7 @@
         const win = S.window.pos();
         
         for (let x = 0; x < container.length; x++) {
-            const c = S(container[x]);
+            const c = $(container[x]);
             const movable = c.find('.movable');
             const pos = c[0].getBoundingClientRect();
             let foot = 0;
@@ -314,7 +314,7 @@
     },
 
     update: function (container) {
-        const c = S(container);
+        const c = $(container);
         let item = S.scrollbar.items.filter(a => a.container.filter((i, b) => c[0] == b).length > 0);
         if (item.length == 0) { return; }
         S.scrollbar.resize(item[0].container, item[0].options);
