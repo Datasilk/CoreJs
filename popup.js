@@ -23,7 +23,7 @@
 
         popup.css({ width: opts.width });
         if (opts.maxWidth != null) { popup.css({ maxWidth: opts.maxWidth }); }
-        popup.addClass(opts.position);
+        popup.addClass('pos-' + opts.position);
         if (opts.offsetHeight > 0) {
             popup.css({ Marginbottom: opts.offsetHeight });
         }
