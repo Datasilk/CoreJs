@@ -1,29 +1,29 @@
 ﻿S.util = {
     js: {
-        load: function (file, id, callback, error) {
+        load: function (file, id, callback, error, doc) {
             //add javascript file to DOM
-            if (document.getElementById(id)) { if (callback) { callback(); } return false; }
-            var body = document.body;
-            var script = document.createElement('script');
+            if (!doc) { doc = document;}
+            if (doc.getElementById(id)) { if (callback) { callback(); } return false; }
+            var script = doc.createElement('script');
             script.type = 'text/javascript';
             script.src = file;
             script.id = id;
             script.onload = callback;
             script.onerror = error;
-            body.appendChild(script);
+            doc.body.appendChild(script);
         }
     },
     css: {
-        load: function (file, id) {
+        load: function (file, id, doc) {
             //download CSS file and load onto the page
-            if (document.getElementById(id)) { return false; }
-            var head = document.getElementsByTagName('head')[0];
-            var link = document.createElement('link');
+            if (!doc) { doc = document; }
+            if (doc.getElementById(id)) { return false; }
+            var link = doc.createElement('link');
             link.rel = 'stylesheet';
             link.type = 'text/css';
             link.href = file;
             link.id = id;
-            head.appendChild(link);
+            doc.head.appendChild(link);
         },
 
         add: function (id, css) {
