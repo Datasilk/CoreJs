@@ -9,14 +9,14 @@
         if (options && options.container) { opts.container == options.container; }
         if (options && options.target) { opts.target == options.target; }
         if (options && options.ontoggle) { opts.ontoggle == options.ontoggle; }
-        $('.accordion > .title').off('click').on('click', (e) => {
+        S('.accordion > .title').off('click').on('click', (e) => {
             S.accordion.toggle(e);
-            if (typeof ontoggle == 'function') { ontoggle(e, $(e.target).hasClass('expanded')); }
+            if (typeof ontoggle == 'function') { ontoggle(e, S(e.target).hasClass('expanded')); }
         });
     },
 
     toggle: function (e) {
-        $(e.target).parents('.accordion').first().toggleClass('expanded');
+        S(e.target).parents('.accordion').first().toggleClass('expanded');
     }
 };
 

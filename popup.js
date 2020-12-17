@@ -17,8 +17,8 @@
 
         var win = S.window.pos();
         var div = document.createElement('div');
-        var forpopup = $('body > .for-popup');
-        var popup = $(div);
+        var forpopup = S('body > .for-popup');
+        var popup = S(div);
         div.className = 'popup box ' + opts.className;
 
         popup.css({ width: opts.width });
@@ -38,22 +38,22 @@
             forpopup.css({ padding: opts.padding });
         }
 
-        var view = new S.view($('#template_popup').html(), {
+        var view = new S.view(S('#template_popup').html(), {
             title: title,
             body: html
         }, "#", "#");
         popup.html(view.render());
         this.elem = popup;
 
-        $('body > .for-popup .popup').remove();
+        S('body > .for-popup .popup').remove();
         forpopup.removeClass('hide').append(div);
 
         //set up events
-        $(window).on('resize', S.popup.resize);
-        $(window).on('scroll', S.popup.resize);
+        S(window).on('resize', S.popup.resize);
+        S(window).on('scroll', S.popup.resize);
 
         if (opts.close == true) {
-            $('.popup .btn-close a').on('click', function () {
+            S('.popup .btn-close a').on('click', function () {
                 S.popup.hide();
             });
         }
@@ -63,13 +63,13 @@
 
     hide: function () {
         //remove events
-        $('body > .for-popup').addClass('hide');
-        $(window).off('resize', S.popup.resize);
-        $(window).off('scroll', S.popup.resize);
+        S('body > .for-popup').addClass('hide');
+        S(window).off('resize', S.popup.resize);
+        S(window).off('scroll', S.popup.resize);
     },
 
     bg: function (e) {
-        if (e.target == $('.bg.for-popup')[0]) { S.popup.hide(); }
+        if (e.target == S('.bg.for-popup')[0]) { S.popup.hide(); }
     },
 
     resize: function () {
