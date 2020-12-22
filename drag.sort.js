@@ -7,17 +7,17 @@ S.drag.sort = {
         const elems = $(items);
         for(let x = 0; x < elems.length; x++) {
             const elem = $(elems[x]);
-            elem.on('dragstart', () => {
+            elem.off('dragstart').on('dragstart', () => {
                 elem.addClass('dragging');
             });
-            elem.on('dragend', () => {
+            elem.off('dragend').on('dragend', (e) => {
                 elem.removeClass('dragging');
-                if (callback) { callback(); }
+                if (callback) { callback(e); }
             });
         }
         for (var x = 0; x < parents.length; x++) {
             let parent = parents[x];
-            $(parent).on('dragover', (e) => {
+            $(parent).off('dragover').on('dragover', (e) => {
                 e.preventDefault();
                 const afterElement = S.drag.sort.after(elems, e.clientY);
                 const draggable = parents.find('.dragging')[0];

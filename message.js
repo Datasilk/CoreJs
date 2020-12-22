@@ -26,6 +26,7 @@
                             el.hide();
                         }
                     });
+                    setTimeout(() => { el.hide(); }, 400);
                 } else { el.hide(); }
             }, hideDelay);
         }
