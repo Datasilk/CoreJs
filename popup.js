@@ -60,6 +60,7 @@
         }
 
         S.popup.resize();
+        return popup;
     },
 
     hide: function (popup) {
