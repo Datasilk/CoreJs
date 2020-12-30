@@ -1,5 +1,5 @@
 ﻿S.popup = {
-    elem: null, options: null,
+    elem: null, options: [],
 
     show: function (title, html, options) {
         if (options == null) { options = {}; }
@@ -13,30 +13,14 @@
             close: options.close != null ? options.close : true,
             className: options.className != null ? options.className : ''
         };
-        this.options = opts;
 
         var win = S.window.pos();
-        var div = document.createElement('div');
+        let div = document.createElement('div');
         var forpopup = $('body > .for-popup');
-        var popup = $(div);
+        let popup = $(div);
         div.className = 'popup box ' + opts.className;
-
-        popup.css({ width: opts.width });
-        if (opts.maxWidth != null) { popup.css({ maxWidth: opts.maxWidth }); }
-        popup.addClass('pos-' + opts.position);
-        if (opts.offsetHeight > 0) {
-            popup.css({ Marginbottom: opts.offsetHeight });
-        }
-        if (opts.offsetTop.toString().indexOf('%') > 0) {
-            popup.css({ top: opts.offsetTop });
-        } else if (Number(opts.offsetTop) == opts.offsetTop) {
-            if (opts.offsetTop > 0) {
-                popup.css({ top: win.scrolly + ((win.h - 300) / 3) + opts.offsetTop });
-            }
-        }
-        if (opts.padding > 0) {
-            forpopup.css({ padding: opts.padding });
-        }
+        this.options.push({ elem: div, options: opts });
+        forpopup.removeClass('hide').append(div);
 
         var view = new S.view($('#template_popup').html(), {
             title: title,
@@ -45,25 +29,70 @@
         popup.html(view.render());
         this.elem = popup;
 
-        $('body > .for-popup .popup').remove();
-        forpopup.removeClass('hide').append(div);
+        //resize & reposition popup modal
+        popup.css({ width: opts.width });
+        if (opts.maxWidth != null) { popup.css({ maxWidth: opts.maxWidth }); }
+        popup.addClass('pos-' + opts.position);
+        if (opts.offsetHeight > 0) {
+            popup.css({ Marginbottom: opts.offsetHeight });
+        }
+        if (opts.offsetTop.toString().indexOf('%') > 0) {
+            popup.css({ top: opts.offsetTop });
+        } else {
+            popup.css({ top: win.scrolly + ((win.h - 300) / 3) + opts.offsetTop });
+        }
+        if (opts.padding > 0) {
+            forpopup.css({ padding: opts.padding });
+        }
 
         //set up events
-        $(window).on('resize', S.popup.resize);
-        $(window).on('scroll', S.popup.resize);
+        if (forpopup.children().length == 1) {
+            $(window).on('resize', S.popup.resize);
+            $(window).on('scroll', S.popup.resize);
+        }
 
         if (opts.close == true) {
-            $('.popup .btn-close a').on('click', function () {
-                S.popup.hide();
+            popup.find('.btn-close a').on('click', function () {
+                S.popup.hide(popup);
             });
+        } else {
+            popup.find('.btn-close').hide();
         }
 
         S.popup.resize();
     },
 
-    hide: function () {
+    hide: function (popup) {
         //remove events
-        $('body > .for-popup').addClass('hide');
+        var popups = $('body > .for-popup');
+        if (popup && popup.target) {
+            //remove parent popup
+            popup = $(popup.target).parents('.popup').first();
+        } else if (popup) {
+            //remove single popup
+        } else {
+            //remove all popups
+            var c = popups.children();
+            for (var x = 0; x < c.length; x++) {
+                $(c[x]).remove();
+            }
+            S.popup.options = [];
+        }
+        if (popup) {
+            //remove single popup option
+            var opts = S.popup.options;
+            for (var x = 0; x < opts.length; x++) {
+                if (opts[x].elem == popup[0]) {
+                    S.popup.options.splice(x, 1);
+                    break;
+                }
+            }
+            //remove single popup
+            popup.remove();
+        }
+        if (popups.children().length == 0) {
+            $('body > .for-popup').addClass('hide');
+        }
         $(window).off('resize', S.popup.resize);
         $(window).off('scroll', S.popup.resize);
     },
@@ -74,8 +103,18 @@
 
     resize: function () {
         var win = S.window.pos();
-        var pos = S.popup.elem.position();
-        pos.height = S.popup.elem.height();
-        S.popup.elem.css({ maxHeight: win.height - (S.popup.options.padding * 2), top: S.popup.options.offsetTop.toString().indexOf('%') > 0 ? S.popup.options.offsetTop : win.scrolly + ((win.h - pos.height) / 3) + S.popup.options.offsetTop });
+        var elems = $('body > .for-popup > div');
+        for (var x = 0; x < elems.length; x++) {
+            var elem = $(elems[x]);
+            var pos = elem.position();
+            pos.height = elem.height();
+            var options = S.popup.options[x].options;
+            elem.css({ maxHeight: win.h - (options.padding * 2), top: options.offsetTop.toString().indexOf('%') > 0 ? options.offsetTop : win.scrolly + ((win.h - pos.height) / 3) + options.offsetTop });
+            if (options.position == 'center') {
+                pos.width = elem.width();
+                elem.css({ left: Math.round((win.w - pos.width) / 2) + 'px' });
+            }
+        }
+        
     }
 }
