@@ -71,16 +71,6 @@
             popup = $(popup.target).parents('.popup').first();
         } else if (popup) {
             //remove single popup
-        } else {
-            //remove all popups
-            var c = popups.children();
-            for (var x = 0; x < c.length; x++) {
-                $(c[x]).remove();
-            }
-            S.popup.options = [];
-        }
-        if (popup) {
-            //remove single popup option
             var opts = S.popup.options;
             for (var x = 0; x < opts.length; x++) {
                 if (opts[x].elem == popup[0]) {
@@ -90,6 +80,13 @@
             }
             //remove single popup
             popup.remove();
+        } else {
+            //remove all popups
+            var c = popups.children();
+            for (var x = 0; x < c.length; x++) {
+                $(c[x]).remove();
+            }
+            S.popup.options = [];
         }
         if (popups.children().length == 0) {
             $('body > .for-popup').addClass('hide');
