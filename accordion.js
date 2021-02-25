@@ -1,6 +1,6 @@
 ﻿S.accordion = {
     load: function (options) {
-        opts = {
+        var opts = {
             container: '.accordion',
             target: '.accordion > .title',
             ontoggle: null
