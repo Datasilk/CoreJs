@@ -48,6 +48,9 @@
             if (mutationObserver) {
                 // define a new observer
                 var obs = new mutationObserver(function (mutations, observer) {
+                    if (mutations.length == 1) {
+                        if ($(mutations[0].target).parent.hasClass('scrollable')) { return; }
+                    }
                     callback_resize();
                 })
                 // have the observer observe foo for changes in children
@@ -206,10 +209,11 @@
     },
 
     to: function (item, percent) {
+        percent = parseInt(percent);
         let perc = S.math.clamp(percent, 0, 100);
         S.scrollbar.items[item.index].percent = percent;
-        item.scrollbar.css({ top: ((item.height - 7 - item.barHeight) / 100) * perc });
-        item.movable.css({ top: -1 * (((item.contentH - item.height) / 100) * perc) });
+        item.scrollbar.css({ top: parseInt(((item.height - 7 - item.barHeight) / 100) * perc) });
+        item.movable.css({ top: -1 * parseInt((((item.contentH - item.height) / 100) * perc)) });
     },
 
     move: function (px) {
@@ -302,7 +306,7 @@
                 //update scrollbar height
                 
                 c.find('.scroller').css({ height: height - 7 });
-                c.find('.scrollbar').css({ height: ((height - 7) / h) * height });
+                c.find('.scrollbar').css({ height: parseInt(((height - 7) / h) * height) });
             } else {
                 //hide scrollbar
                 if (c.hasClass('scroll')) {
