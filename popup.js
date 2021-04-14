@@ -50,6 +50,7 @@
             $(window).on('resize', S.popup.resize);
             $(window).on('scroll', S.popup.resize);
         }
+        forpopup.off('mousedown', S.popup.bg).on('mousedown', S.popup.bg);
 
         if (opts.close == true) {
             popup.find('.btn-close a').on('click', function () {
