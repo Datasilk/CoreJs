@@ -19,7 +19,7 @@ Datasilk Core JS uses a modular system combined with `gulpfile.js`, allowing dev
 `S` is a global JavaScript object that is used as a "Super" object, containing a hierarchy of methods & properties used within your web application. 
 
 |Property|default|description|
-|---|---|
+|---|---|---|
 |`S.root`|`''`|Specifies where the platform was installed relative to the project folder.|
 
 ### Accordion.js
