@@ -13,7 +13,7 @@
         //add custom scrollbar to container
         var mutationObserver = window.MutationObserver || window.WebKitMutationObserver;
         var resizeObserver = window.ResizeObserver || window.WebKitResizeObserver;
-        var opts = options != null ? options : {};
+        let opts = options != null ? options : {};
         let c = $(container);
         c.addClass('scrollable');
 
@@ -31,7 +31,7 @@
             c.on('touchstart', (e) => S.scrollbar.touchstart(e, { ...opts, istouch: true }));
             c.on('touchmove', (e) => S.scrollbar.touchmove(e, { ...opts, istouch: true }));
             c.on('touchend', (e) => S.scrollbar.touchend(e, { ...opts, istouch: true }));
-        }
+        } 
 
         
         for (let x = 0; x < c.length; x++) {
@@ -49,7 +49,7 @@
                 // define a new observer
                 var obs = new mutationObserver(function (mutations, observer) {
                     if (mutations.length == 1) {
-                        if ($(mutations[0].target).parent.hasClass('scrollable')) { return; }
+                        if ($(mutations[0].target).parent().hasClass('scrollable')) { return; }
                     }
                     callback_resize();
                 })
@@ -304,7 +304,6 @@
                 //show scrollbar
                 c.addClass('scroll');
                 //update scrollbar height
-                
                 c.find('.scroller').css({ height: height - 7 });
                 c.find('.scrollbar').css({ height: parseInt(((height - 7) / h) * height) });
             } else {
