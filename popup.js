@@ -18,7 +18,7 @@
         let div = document.createElement('div');
         var forpopup = $('body > .for-popup');
         let popup = $(div);
-        div.className = 'popup box ' + opts.className;
+        div.className = 'popup box show ' + opts.className;
         this.options.push({ elem: div, options: opts });
         forpopup.removeClass('hide').append(div);
 
@@ -61,6 +61,14 @@
         }
 
         S.popup.resize();
+        popup.hide = () => {
+            //used when temporarily hiding popup to show another popup
+            popup.addClass('hide').removeClass('show');
+        };
+        popup.show = () => {
+            //used when showing this popup after hiding another popup
+            popup.removeClass('hide').addClass('show');
+        };
         return popup;
     },
 
@@ -109,10 +117,6 @@
             pos.height = elem.height();
             var options = S.popup.options[x].options;
             elem.css({ maxHeight: win.h - (options.padding * 2), top: options.offsetTop.toString().indexOf('%') > 0 ? options.offsetTop : win.scrolly + ((win.h - pos.height) / 3) + options.offsetTop });
-            if (options.position == 'center') {
-                pos.width = elem.width();
-                elem.css({ left: Math.round((win.w - pos.width) / 2) + 'px' });
-            }
         }
         
     }
