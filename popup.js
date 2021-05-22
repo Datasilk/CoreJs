@@ -64,6 +64,11 @@
         popup.hide = () => {
             //used when temporarily hiding popup to show another popup
             popup.addClass('hide').removeClass('show');
+            setTimeout(() => {
+                if ($('.popup.show').length == 0) {
+                    S.popup.hide();
+                }
+            }, 100);
         };
         popup.show = () => {
             //used when showing this popup after hiding another popup

@@ -288,19 +288,10 @@
             const c = $(container[x]);
             const movable = c.find('.movable');
             const pos = c[0].getBoundingClientRect();
-            let foot = 0;
-            if (options.footer != null) {
-                if (typeof options.footer == 'function') {
-                    foot = options.footer(c);
-                } else {
-                    foot = options.footer;
-                }
-            }
-            const height = win.h - pos.top - foot;
+            const height = pos.height;
             let h = movable.height();
             const item = S.scrollbar.get(c, options);
-
-            if (h > height) {
+            if (h > height + 1) {
                 //show scrollbar
                 c.addClass('scroll');
                 //update scrollbar height
@@ -308,9 +299,7 @@
                 c.find('.scrollbar').css({ height: parseInt(((height - 7) / h) * height) });
             } else {
                 //hide scrollbar
-                if (c.hasClass('scroll')) {
-                    c.removeClass('scroll');
-                }
+                c.removeClass('scroll');
             }
             S.scrollbar.to(item, S.scrollbar.items[item.index].percent);
         };
