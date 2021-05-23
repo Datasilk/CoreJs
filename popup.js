@@ -11,7 +11,9 @@
             offsetTop: options.offsetTop != null ? options.offsetTop : 0,
             position: options.position != null ? options.position : 'center',
             close: options.close != null ? options.close : true,
-            className: options.className != null ? options.className : ''
+            className: options.className != null ? options.className : '',
+            onResize: options.onResize != null ? options.onResize : null,
+            onClose: options.onClose != null ? options.onClose : null
         };
 
         var win = S.window.pos();
@@ -34,16 +36,12 @@
         if (opts.maxWidth != null) { popup.css({ maxWidth: opts.maxWidth }); }
         popup.addClass('pos-' + opts.position);
         if (opts.offsetHeight > 0) {
-            popup.css({ Marginbottom: opts.offsetHeight });
-        }
-        if (opts.offsetTop.toString().indexOf('%') > 0) {
-            popup.css({ top: opts.offsetTop });
-        } else {
-            popup.css({ top: win.scrolly + ((win.h - 300) / 3) + opts.offsetTop });
+            popup.css({ 'margin-bottom': opts.offsetHeight });
         }
         if (opts.padding > 0) {
-            forpopup.css({ padding: opts.padding });
+            //forpopup.css({ padding: opts.padding });
         }
+        S.popup.resize();
 
         //set up events
         if (forpopup.children().length == 1) {
@@ -60,7 +58,6 @@
             popup.find('.btn-close').hide();
         }
 
-        S.popup.resize();
         popup.hide = () => {
             //used when temporarily hiding popup to show another popup
             popup.addClass('hide').removeClass('show');
@@ -88,6 +85,8 @@
             var opts = S.popup.options;
             for (var x = 0; x < opts.length; x++) {
                 if (opts[x].elem == popup[0]) {
+                    console.log(opts[x]);
+                    if (opts[x].options.onClose) { opts[x].options.onClose(); }
                     S.popup.options.splice(x, 1);
                     break;
                 }
@@ -117,12 +116,19 @@
         var win = S.window.pos();
         var elems = $('body > .for-popup > div');
         for (var x = 0; x < elems.length; x++) {
-            var elem = $(elems[x]);
-            var pos = elem.position();
-            pos.height = elem.height();
-            var options = S.popup.options[x].options;
-            elem.css({ maxHeight: win.h - (options.padding * 2), top: options.offsetTop.toString().indexOf('%') > 0 ? options.offsetTop : win.scrolly + ((win.h - pos.height) / 3) + options.offsetTop });
+            var popup = $(elems[x]);
+            var pos = popup.position();
+            pos.height = popup.height();
+            var opts = S.popup.options[x].options;
+            popup.css({
+                'max-height': (win.h - (opts.padding * 2)) + 'px'
+            });
+
+            pos.height = popup.height();
+            popup.css({ top: opts.offsetTop.toString().indexOf('%') > 0 ? opts.offsetTop : win.scrolly + ((win.h - pos.height) / 3) + opts.offsetTop });
+            if (typeof opts.onResize == 'function') {
+                opts.onResize();
+            }
         }
-        
     }
 }

@@ -307,7 +307,6 @@
     update: function (container) {
         const c = $(container);
         let item = S.scrollbar.items.filter(a => a.container.filter((i, b) => c[0] == b).length > 0);
-        console.log([c, item]);
         if (item.length == 0) { return; }
         S.scrollbar.resize(item[0].container, item[0].options);
     }
