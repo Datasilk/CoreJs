@@ -282,14 +282,13 @@
 
     resize: function (container, options) {
         //resize list height
-        const win = S.window.pos();
-        
         for (let x = 0; x < container.length; x++) {
             const c = $(container[x]);
             const movable = c.find('.movable');
+            let h = movable.height();
+            if (h == 0) { continue; }
             const pos = c[0].getBoundingClientRect();
             const height = pos.height;
-            let h = movable.height();
             const item = S.scrollbar.get(c, options);
             if (h > height + 1) {
                 //show scrollbar
@@ -308,6 +307,7 @@
     update: function (container) {
         const c = $(container);
         let item = S.scrollbar.items.filter(a => a.container.filter((i, b) => c[0] == b).length > 0);
+        console.log([c, item]);
         if (item.length == 0) { return; }
         S.scrollbar.resize(item[0].container, item[0].options);
     }
