@@ -85,7 +85,6 @@
             var opts = S.popup.options;
             for (var x = 0; x < opts.length; x++) {
                 if (opts[x].elem == popup[0]) {
-                    console.log(opts[x]);
                     if (opts[x].options.onClose) { opts[x].options.onClose(); }
                     S.popup.options.splice(x, 1);
                     break;
