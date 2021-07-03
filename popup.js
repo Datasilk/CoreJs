@@ -11,12 +11,12 @@
             offsetTop: options.offsetTop != null ? options.offsetTop : 0,
             position: options.position != null ? options.position : 'center',
             close: options.close != null ? options.close : true,
+            backButton: options.backButton != null ? options.backButton : false, 
             className: options.className != null ? options.className : '',
             onResize: options.onResize != null ? options.onResize : null,
             onClose: options.onClose != null ? options.onClose : null
         };
 
-        var win = S.window.pos();
         let div = document.createElement('div');
         var forpopup = $('body > .for-popup');
         let popup = $(div);
@@ -47,13 +47,21 @@
         if (forpopup.children().length == 1) {
             $(window).on('resize', S.popup.resize);
             $(window).on('scroll', S.popup.resize);
+        } else {
+            opts.backButton = true;
         }
         forpopup.off('mousedown', S.popup.bg).on('mousedown', S.popup.bg);
 
-        if (opts.close == true) {
+        if (opts.close == true || opts.backButton == true) {
             popup.find('.btn-close a').on('click', function () {
                 S.popup.hide(popup);
             });
+            if (opts.backButton == true) {
+                console.log('back button');
+                popup.find('.btn-close use').attr('xlink:href', '#icon-back');
+            } else {
+                popup.find('.btn-close use').attr('xlink:href', '#icon-close');
+            }
         } else {
             popup.find('.btn-close').hide();
         }
