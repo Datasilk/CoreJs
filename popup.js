@@ -41,7 +41,6 @@
         if (opts.padding > 0) {
             //forpopup.css({ padding: opts.padding });
         }
-        S.popup.resize();
 
         //set up events
         if (forpopup.children().length == 1) {
@@ -79,6 +78,9 @@
             //used when showing this popup after hiding another popup
             popup.removeClass('hide').addClass('show');
         };
+
+        S.popup.resize();
+        setTimeout(S.popup.resize, 1);
         return popup;
     },
 
