@@ -1,5 +1,11 @@
 ﻿S.popup = {
-    elem: null, options: [],
+    elem: null,
+    options: [],
+    global: { //global options used for all popup modals unless overridden by specific popup instance options
+        stickyTop: -1, //keeps popup modal at a specified top position unless the popup height requires the modal to be pushed up further
+        offsetTop: 0,
+        offsetHeight: 0
+    },
 
     show: function (title, html, options) {
         if (options == null) { options = {}; }
@@ -7,8 +13,10 @@
             width: options.width != null ? options.width : 300,
             maxWidth: options.maxWidth != null ? options.maxWidth : null,
             padding: options.padding != null ? options.padding : 0,
-            offsetHeight: options.offsetHeight != null ? options.offsetHeight : 0,
-            offsetTop: options.offsetTop != null ? options.offsetTop : 0,
+            offsetHeight: options.offsetHeight != null ? options.offsetHeight : S.popup.global.offsetHeight,
+            offsetTop: options.offsetTop != null ? options.offsetTop : S.popup.global.offsetTop,
+            stickyTop: options.stickyTop != null ? options.stickyTop : S.popup.global.stickyTop,
+            stickyHeight: options.stickyHeight != null ? options.stickyHeight : S.popup.global.stickyHeight,
             position: options.position != null ? options.position : 'center',
             close: options.close != null ? options.close : true,
             backButton: options.backButton != null ? options.backButton : false, 
@@ -35,12 +43,6 @@
         popup.css({ width: opts.width });
         if (opts.maxWidth != null) { popup.css({ maxWidth: opts.maxWidth }); }
         popup.addClass('pos-' + opts.position);
-        if (opts.offsetHeight > 0) {
-            popup.css({ 'margin-bottom': opts.offsetHeight });
-        }
-        if (opts.padding > 0) {
-            //forpopup.css({ padding: opts.padding });
-        }
 
         //set up events
         if (forpopup.children().length == 1) {
@@ -56,7 +58,6 @@
                 S.popup.hide(popup);
             });
             if (opts.backButton == true) {
-                console.log('back button');
                 popup.find('.btn-close use').attr('xlink:href', '#icon-back');
             } else {
                 popup.find('.btn-close use').attr('xlink:href', '#icon-close');
@@ -129,12 +130,23 @@
             var pos = popup.position();
             pos.height = popup.height();
             var opts = S.popup.options[x].options;
-            popup.css({
-                'max-height': (win.h - (opts.padding * 2)) + 'px'
-            });
-
+            var stickyTop_px = opts.stickyTop != null ?
+                (opts.stickyTop.toString().indexOf('%') > 0 ? ((100 / win.h) * parseInt(opts.stickyTop.toString().replace('%', ''))) :
+                    parseInt(opts.stickyTop.toString().replace('px', ''))) : 0;
+            popup.css({'max-height': (win.h - (opts.padding * 2) - stickyTop_px - opts.offsetHeight) + 'px'});
             pos.height = popup.height();
-            popup.css({ top: opts.offsetTop.toString().indexOf('%') > 0 ? opts.offsetTop : win.scrolly + ((win.h - pos.height) / 3) + opts.offsetTop });
+
+            if (opts.offsetTop.toString().indexOf('%') > 0) {
+                //use percentage for top position
+                popup.css({ top: opts.offsetTop.toString() });
+            } else {
+                var y = opts.stickyTop;
+                if (opts.stickyTop >= 0) {
+                    popup.css({ top: opts.stickyTop });
+                } else {
+                    popup.css({ top: win.scrolly + ((win.h - pos.height) / 3) + opts.offsetTop });
+                }
+            }
             if (typeof opts.onResize == 'function') {
                 opts.onResize();
             }
