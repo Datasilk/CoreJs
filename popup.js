@@ -113,6 +113,10 @@
         }
         if (popups.children().length == 0) {
             $('body > .for-popup').addClass('hide');
+        } else {
+            //show last popup
+            popups.find('.popup').last().addClass('show').show();
+            S.popup.resize();
         }
         $(window).off('resize', S.popup.resize);
         $(window).off('scroll', S.popup.resize);
