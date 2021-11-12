@@ -25,8 +25,12 @@
             onClose: options.onClose != null ? options.onClose : null
         };
 
-        let div = document.createElement('div');
+        //hide all other popups
         var forpopup = $('body > .for-popup');
+        forpopup.find('.popup').removeClass('show').hide();
+
+        //show new popup
+        let div = document.createElement('div');
         let popup = $(div);
         div.className = 'popup box show ' + opts.className;
         this.options.push({ elem: div, options: opts });
