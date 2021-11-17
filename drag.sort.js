@@ -22,16 +22,17 @@ S.drag.sort = {
                 const afterElement = S.drag.sort.after(elems, parent, e.clientY);
                 const draggable = parents.find('.dragging')[0];
                 if (!draggable) { return;}
-                console.log(['draggable', draggable]);
                 if (afterElement == null) {
                     parent.appendChild(draggable);
                 } else {
                     const box = afterElement.getBoundingClientRect();
-                    if (box.top + (box.height / 2) > e.clientY) {
-                        parent.insertBefore(draggable, afterElement);
-                    } else {
-                        parent.insertAfter(draggable, afterElement);
-                    }
+                    try {
+                        if (box.top + (box.height / 2) > e.clientY) {
+                            parent.insertBefore(draggable, afterElement);
+                        } else {
+                            parent.insertAfter(draggable, afterElement);
+                        }
+                    } catch (ex) {}
                 }
             });
         }
@@ -44,7 +45,6 @@ S.drag.sort = {
             const box = child.getBoundingClientRect();
             const offset = y - box.top - box.height / 2;
             if (offset == -Infinity || offset == Infinity) {
-                console.log(box);
                 offset = 0;
             }
             if (closest != null && offset < 0 && offset > closest.offset) {
