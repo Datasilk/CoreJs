@@ -9,6 +9,7 @@
         //  touch (bool) //allows touch scrolling
         //  touchStart: callback function(TouchEvent, options)
         //  touchEnd: callback function(TouchEvent, options)
+        //  moved: callback function(options)
         //}
         //add custom scrollbar to container
         var mutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -45,15 +46,19 @@
             //add event listener for DOM changes within the container
             let movable = $(cn).find('.movable');
             let callback_resize = () => S.scrollbar.resize($(cn), opts);
+            let mutated = false;
             if (mutationObserver) {
                 // define a new observer
                 var obs = new mutationObserver(function (mutations, observer) {
+                    if (mutated == true) { return;}
                     if (mutations.length == 1) {
                         if ($(mutations[0].target).parent().hasClass('scrollable')) { return; }
                     }
+                    mutated = true;
                     callback_resize();
+                    setTimeout(() => { mutated = false; }, 10);
                 })
-                // have the observer observe foo for changes in children
+                // have the observer observe changes in children
                 obs.observe(movable[0], { attributes: true, childList: true, subtree: true });
             }
 
@@ -190,9 +195,7 @@
         //steady animation of scrolling movement
         const item = S.scrollbar.selected;
         const curr = item.currentY - item.cursorY - (item.offsetY - item.barY);
-        let perc = (100 / (item.height - 7 - item.barHeight)) * curr;
-        if (perc < 0) { perc = 0; }
-        if (perc > 100) { perc = 100; }
+        let perc = S.math.clamp((100 / (item.height - 7 - item.barHeight)) * curr, 0, 100);
         S.scrollbar.to(item, perc);
         requestAnimationFrame(() => {
             if (S.scrollbar.selected.scrolling == true) {
@@ -211,9 +214,12 @@
     to: function (item, percent) {
         percent = parseInt(percent);
         let perc = S.math.clamp(percent, 0, 100);
+        var top = -1 * Math.round((((item.contentH - item.height) / 100) * perc));
+        if (top > 0) { top = 0;}
         S.scrollbar.items[item.index].percent = percent;
-        item.scrollbar.css({ top: parseInt(((item.height - 7 - item.barHeight) / 100) * perc) });
-        item.movable.css({ top: -1 * parseInt((((item.contentH - item.height) / 100) * perc)) });
+        item.scrollbar.css({ top: Math.round(((item.height - 7 - item.barHeight) / 100) * perc) });
+        item.movable.css({ top: top });
+        if (item.options.moved) { item.options.moved(item);}
     },
 
     move: function (px) {
@@ -295,7 +301,7 @@
                 c.addClass('scroll');
                 //update scrollbar height
                 c.find('.scroller').css({ height: height - 7 });
-                c.find('.scrollbar').css({ height: parseInt(((height - 7) / h) * height) });
+                c.find('.scrollbar').css({ height: Math.round(((height - 7) / h) * height) });
             } else {
                 //hide scrollbar
                 c.removeClass('scroll');
