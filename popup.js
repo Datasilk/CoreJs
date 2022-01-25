@@ -155,10 +155,10 @@
                     popup.css({ top: win.scrolly + ((win.h - pos.height) / 3) + opts.offsetTop });
                 }
             }
-            //if (opts.position == 'center') {
-            //    pos.width = popup.width();
-            //    popup.css({ left: Math.round((win.w - pos.width) / 2) + 'px' });
-            //}
+            if (opts.position == 'center') {
+                pos.width = popup.width();
+                popup.css({ left: Math.round((win.w - pos.width) / 2) + 'px' });
+            }
             if (typeof opts.onResize == 'function') {
                 opts.onResize();
             }
