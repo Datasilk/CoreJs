@@ -1,5 +1,5 @@
 ﻿S.message = {
-    defaultElement: '.popup.show .message',
+    defaultElement: '.popup.show .messages',
     show: function(element, type, msg, fadein, hideDelay, fadeout) {
         var types = 'error warning alert';
         if (!element) { element = S.message.defaultElement };
