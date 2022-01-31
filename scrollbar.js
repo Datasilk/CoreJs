@@ -43,17 +43,19 @@
             //resize each container
             S.scrollbar.resize($(cn), opts);
 
-            //add event listener for DOM changes within the container
+            //add event listener for DOM changes within the container to trigger resize callback
             let movable = $(cn).find('.movable');
             let callback_resize = () => S.scrollbar.resize($(cn), opts);
             let mutated = false;
             if (mutationObserver) {
                 // define a new observer
                 var obs = new mutationObserver(function (mutations, observer) {
-                    if (mutated == true) { return;}
-                    if (mutations.length == 1) {
-                        if ($(mutations[0].target).parent().hasClass('scrollable')) { return; }
+                    if (mutated == true) { return; }
+                    if (mutations.length >= 1) {
+                        var elem = $(mutations[0].target);
+                        if (elem.parent().hasClass('scrollable')) { return; }
                     }
+                    //console.log(mutations);
                     mutated = true;
                     callback_resize();
                     setTimeout(() => { mutated = false; }, 10);
