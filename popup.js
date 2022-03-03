@@ -1,5 +1,6 @@
 ﻿S.popup = {
     elem: null,
+    hasmousedown: false,
     options: [],
     global: { //global options used for all popup modals unless overridden by specific popup instance options
         stickyTop: -1, //keeps popup modal at a specified top position unless the popup height requires the modal to be pushed up further
@@ -19,7 +20,7 @@
             stickyHeight: options.stickyHeight != null ? options.stickyHeight : S.popup.global.stickyHeight,
             position: options.position != null ? options.position : 'center',
             close: options.close != null ? options.close : true,
-            backButton: options.backButton != null ? options.backButton : false, 
+            backButton: options.backButton != null ? options.backButton : false,
             className: options.className != null ? options.className : '',
             onResize: options.onResize != null ? options.onResize : null,
             onClose: options.onClose != null ? options.onClose : null
@@ -126,8 +127,15 @@
         $(window).off('scroll', S.popup.resize);
     },
 
+    mousedown: function () {
+        S.popup.hasmousedown = true;
+    },
+
     bg: function (e) {
-        if (e.target == $('.bg.for-popup')[0]) { S.popup.hide(); }
+        if (S.popup.hasmousedown == true) {
+            if (e.target == $('.bg.for-popup')[0]) { S.popup.hide(); }
+            S.popup.hasmousedown = false;
+        }
     },
 
     resize: function () {
@@ -141,7 +149,7 @@
             var stickyTop_px = opts.stickyTop != null ?
                 (opts.stickyTop.toString().indexOf('%') > 0 ? ((100 / win.h) * parseInt(opts.stickyTop.toString().replace('%', ''))) :
                     parseInt(opts.stickyTop.toString().replace('px', ''))) : 0;
-            popup.css({'max-height': (win.h - (opts.padding * 2) - stickyTop_px - opts.offsetHeight) + 'px'});
+            popup.css({ 'max-height': (win.h - (opts.padding * 2) - stickyTop_px - opts.offsetHeight) + 'px' });
             pos.height = popup.height();
 
             if (opts.offsetTop.toString().indexOf('%') > 0) {
@@ -164,4 +172,14 @@
             }
         }
     }
-}
+};
+
+(function() {
+    var forpopup = $('.bg.for-popup');
+    console.log(forpopup.attr('onclick'));
+    if (forpopup.attr('onclick') != null) {
+        forpopup.on('click', S.popup.bg);
+    }
+    forpopup.on('mousedown', S.popup.mousedown);
+    S.popup.bg
+})();
