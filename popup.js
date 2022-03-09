@@ -133,7 +133,8 @@
 
     bg: function (e) {
         if (S.popup.hasmousedown == true) {
-            if (e.target == $('.bg.for-popup')[0]) { S.popup.hide(); }
+            var bg = $('.bg.for-popup');
+            if (e.target == bg[0] && !bg.hasClass('disabled')) { S.popup.hide(); }
             S.popup.hasmousedown = false;
         }
     },
