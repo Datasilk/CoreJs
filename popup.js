@@ -31,8 +31,16 @@
 
         //hide all other popups
         var forpopup = $('body > .for-popup');
-        forpopup.removeClass('disabled').find('.popup').removeClass('show').hide();
-        if (opts.bg == false) { forpopup.addClass('disabled');}
+        if (this.options.length > 0) {
+            var opened = this.options[this.options.length - 1];
+            opened.popup.hide();
+        }
+        
+        if (opts.bg == false) {
+            forpopup.addClass('disabled');
+        } else {
+            forpopup.removeClass('disabled');
+        }
 
         //show new popup
         let div = document.createElement('div');
@@ -119,11 +127,11 @@
             popup.remove();
         } else {
             //remove all popups
-            var c = popups.children();
-            for (var x = 0; x < c.length; x++) {
-                var opts = S.popup.options.filter(a => a.elem == c[x]);
-                if (opts && opts.options.onClose) { opts.options.onClose(); }
-                $(c[x]).remove();
+            var options = S.popup.options;
+            for (var x = 0; x < options.length; x++) {
+                var opts = S.popup.options[x];
+                if (opts.options && opts.options.onClose) { opts.options.onClose(); }
+                if (opts.elem) { $(opts.elem).remove(); }
             }
             S.popup.options = [];
         }
