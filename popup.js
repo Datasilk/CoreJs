@@ -23,18 +23,21 @@
             backButton: options.backButton != null ? options.backButton : false,
             className: options.className != null ? options.className : '',
             onResize: options.onResize != null ? options.onResize : null,
-            onClose: options.onClose != null ? options.onClose : null
+            onClose: options.onClose != null ? options.onClose : null,
+            onShow: options.onShow != null ? options.onShow : null,
+            onHide: options.onHide != null ? options.onHide : null,
+            bg: options.bg != null ? options.bg : true
         };
 
         //hide all other popups
         var forpopup = $('body > .for-popup');
-        forpopup.find('.popup').removeClass('show').hide();
+        forpopup.removeClass('disabled').find('.popup').removeClass('show').hide();
+        if (opts.bg == false) { forpopup.addClass('disabled');}
 
         //show new popup
         let div = document.createElement('div');
         let popup = $(div);
         div.className = 'popup box show ' + opts.className;
-        this.options.push({ elem: div, options: opts });
         forpopup.removeClass('hide').append(div);
 
         var view = new S.view($('#template_popup').html(), {
@@ -74,16 +77,22 @@
         popup.hide = () => {
             //used when temporarily hiding popup to show another popup
             popup.addClass('hide').removeClass('show');
+            if (opts.onHide != null) { opts.onHide();}
             setTimeout(() => {
                 if ($('.popup.show').length == 0) {
                     S.popup.hide();
                 }
             }, 100);
+            S.popup.resize();
         };
         popup.show = () => {
             //used when showing this popup after hiding another popup
-            popup.removeClass('hide').addClass('show');
+            popup.removeClass('hide').addClass('show').css({ 'display': 'block' });
+            if (opts.onShow) { opts.onShow(); }
+            S.popup.resize();
         };
+
+        this.options.push({ elem: div, options: opts, popup: popup });
 
         S.popup.resize();
         setTimeout(S.popup.resize, 1);
@@ -112,6 +121,8 @@
             //remove all popups
             var c = popups.children();
             for (var x = 0; x < c.length; x++) {
+                var opts = S.popup.options.filter(a => a.elem == c[x]);
+                if (opts && opts.options.onClose) { opts.options.onClose(); }
                 $(c[x]).remove();
             }
             S.popup.options = [];
@@ -119,9 +130,8 @@
         if (popups.children().length == 0) {
             $('body > .for-popup').addClass('hide');
         } else {
-            //show last popup
-            popups.find('.popup').last().addClass('show').show();
-            S.popup.resize();
+            //show last popup after closing this popup
+            S.popup.options[S.popup.options.length - 1].popup.show();
         }
         $(window).off('resize', S.popup.resize);
         $(window).off('scroll', S.popup.resize);
@@ -177,7 +187,6 @@
 
 (function() {
     var forpopup = $('.bg.for-popup');
-    console.log(forpopup.attr('onclick'));
     if (forpopup.attr('onclick') != null) {
         forpopup.on('click', S.popup.bg);
     }
