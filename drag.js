@@ -18,7 +18,7 @@
          * useElemPos:false, callee:S.drag, offsetX: 0, offsetY: 0,
          * hideArea: false, hideAreaOffset: 0 , delay:200, speed: 1000 / 30
          * } */
-        this.items.push({ elem: elem, dragElem: dragElem, onStart: onStart, onDrag: onDrag, onStop: onStop, onClick: onClick, options: options });
+        this.items.push({ elem: elem, dragElem: dragElem, onStart: onStart, onDrag: onDrag, onStop: onStop, onClick: onClick, options: options ? options : {} });
         var x = this.items.length - 1;
         $(elem).on('mousedown', function (e) { S.drag.events.start.call(S.drag, x, e) });
 
@@ -47,10 +47,11 @@
             var self = this;
             var item = this.items[index];
             var delay = 200;
-            if (item.options) {
-                if (item.options.delay != null) {
-                    delay = item.options.delay;
-                }
+            if (item.options.delay != null) {
+                delay = item.options.delay;
+            }
+            if (item.options.cancelBubble == null) {
+                item.options.cancelBubble = true;
             }
             this.item = { index: index };
             this.timer = null;
@@ -140,11 +141,13 @@
             $(window).on('mouseup', S.drag.events.doc.up);
 
             //don't let drag event select text on the page
-            if (e.stopPropagation) e.stopPropagation();
-            if (e.preventDefault) e.preventDefault();
-            e.cancelBubble = true;
-            e.returnValue = false;
-            return false;
+            if (item.options.cancelBubble == true) {
+                if (e.stopPropagation) e.stopPropagation();
+                if (e.preventDefault) e.preventDefault();
+                e.cancelBubble = true;
+                e.returnValue = false;
+                return false;
+            }
         },
 
         doc: {
