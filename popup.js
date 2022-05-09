@@ -168,7 +168,7 @@
             var stickyTop_px = opts.stickyTop != null ?
                 (opts.stickyTop.toString().indexOf('%') > 0 ? ((100 / win.h) * parseInt(opts.stickyTop.toString().replace('%', ''))) :
                     parseInt(opts.stickyTop.toString().replace('px', ''))) : 0;
-            popup.css({ 'max-height': (win.h - (opts.padding * 2) - stickyTop_px - opts.offsetHeight) + 'px' });
+            popup.css({ 'max-height': (win.h - stickyTop_px - opts.offsetHeight) + 'px' });
             pos.height = popup.height();
 
             if (opts.offsetTop.toString().indexOf('%') > 0) {
@@ -176,8 +176,8 @@
                 popup.css({ top: opts.offsetTop.toString() });
             } else {
                 var y = opts.stickyTop;
-                if (opts.stickyTop >= 0) {
-                    popup.css({ top: opts.stickyTop });
+                if (opts.stickyTop != null) {
+                    popup.css({ top: y });
                 } else {
                     popup.css({ top: win.scrolly + ((win.h - pos.height) / 3) + opts.offsetTop });
                 }
