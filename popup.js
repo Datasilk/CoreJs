@@ -30,7 +30,7 @@
         };
 
         //hide all other popups
-        var forpopup = $('body > .for-popup');
+        var forpopup = $('body .for-popup');
         if (this.options.length > 0) {
             var opened = this.options[this.options.length - 1];
             opened.popup.hide();
@@ -109,7 +109,7 @@
 
     hide: function (popup) {
         //remove events
-        var popups = $('body > .for-popup');
+        var popups = $('body .for-popup');
         if (popup && popup.target) {
             //remove parent popup
             popup = $(popup.target).parents('.popup').first();
@@ -136,7 +136,7 @@
             S.popup.options = [];
         }
         if (popups.children().length == 0) {
-            $('body > .for-popup').addClass('hide');
+            $('body .for-popup').addClass('hide');
         } else {
             //show last popup after closing this popup
             S.popup.options[S.popup.options.length - 1].popup.show();
@@ -159,7 +159,7 @@
 
     resize: function () {
         var win = S.window.pos();
-        var elems = $('body > .for-popup > div');
+        var elems = $('body .for-popup > div');
         for (var x = 0; x < elems.length; x++) {
             var popup = $(elems[x]);
             var pos = popup.position();
