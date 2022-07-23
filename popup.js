@@ -145,6 +145,10 @@
         $(window).off('scroll', S.popup.resize);
     },
 
+    back: function(){
+        S.popup.hide(S.popup.options[S.popup.options.length - 1].popup);
+    },
+
     mousedown: function () {
         S.popup.hasmousedown = true;
     },
