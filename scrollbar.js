@@ -55,7 +55,6 @@
                         var elem = $(mutations[0].target);
                         if (elem.parent().hasClass('scrollable')) { return; }
                     }
-                    //console.log(mutations);
                     mutated = true;
                     callback_resize();
                     setTimeout(() => { mutated = false; }, 10);
