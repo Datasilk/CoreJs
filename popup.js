@@ -172,7 +172,7 @@
             var stickyTop_px = opts.stickyTop != null ?
                 (opts.stickyTop.toString().indexOf('%') > 0 ? ((100 / win.h) * parseInt(opts.stickyTop.toString().replace('%', ''))) :
                     parseInt(opts.stickyTop.toString().replace('px', ''))) : 0;
-            popup.css({ 'max-height': (win.h - stickyTop_px - opts.offsetHeight) + 'px' });
+            popup.css({ 'max-height': (win.h - stickyTop_px - opts.offsetHeight - 40) + 'px' });
             pos.height = popup.height();
 
             if (opts.offsetTop.toString().indexOf('%') > 0) {
@@ -203,5 +203,4 @@
         forpopup.on('click', S.popup.bg);
     }
     forpopup.on('mousedown', S.popup.mousedown);
-    S.popup.bg
 })();
