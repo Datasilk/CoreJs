@@ -1,6 +1,6 @@
 ﻿S.field.checkbox = {
-    toggle: function (event, target) {
+    toggle: function (e, target) {
         $(target).toggleClass('checked');
-        event.cancelBubble = true;
+        e.stopPropagation();
     }
 };

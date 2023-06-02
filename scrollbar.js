@@ -134,7 +134,7 @@
 
     start: function (e, options) {
         if (!options.istouch === true) {
-            e.cancelBubble = true;
+            e.stopPropagation();
             e.stopPropagation();
             e.preventDefault();
         }

@@ -50,8 +50,8 @@
             if (item.options.delay != null) {
                 delay = item.options.delay;
             }
-            if (item.options.cancelBubble == null) {
-                item.options.cancelBubble = true;
+            if (item.options.stopPropagation == null) {
+                item.options.stopPropagation = true;
             }
             this.item = { index: index };
             this.timer = null;
@@ -141,10 +141,9 @@
             $(window).on('mouseup', S.drag.events.doc.up);
 
             //don't let drag event select text on the page
-            if (item.options.cancelBubble == true) {
+            if (item.options.stopPropagation == true) {
                 if (e.stopPropagation) e.stopPropagation();
                 if (e.preventDefault) e.preventDefault();
-                e.cancelBubble = true;
                 e.returnValue = false;
                 return false;
             }
